@@ -161,15 +161,13 @@
 <script src="dibujo.js"></script>
 </body>
 </html>
-:root {
-  --primary: #0f4c81;
-  --primary-hover: #0a355c;
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --border: #cbd5e1;
-  --text: #1e293b;
-  --muted: #64748b;
-}
+
+<style>
+  :root { --primary: #0f4c81; ... }
+  /* ... todo el CSS ... */
+  canvas#diagramCanvas { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15); border-radius: 4px; max-width: 100%; height: auto; }
+</style>
+
 
 * { box-sizing: border-box; }
 body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
@@ -249,7 +247,13 @@ input[type="file"] { font-size: 0.8rem; width: 100%; }
 .canvas-toolbar, .toolbar-options { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .canvas-wrapper { background: #e2e8f0; border-radius: 8px; padding: 14px; overflow: auto; display: flex; justify-content: center; }
 canvas#diagramCanvas { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15); border-radius: 4px; max-width: 100%; height: auto; }
-let uploadedImages = [];
+
+<script>
+  let uploadedImages = [];
+  /* ... todo el código JavaScript ... */
+  window.onload = () => { renderBranchesUI(); document.fonts.ready.then(() => draw()); };
+</script>
+
 
 document.getElementById('imageLoader').addEventListener('change', function(e) {
   const files = Array.from(e.target.files);
