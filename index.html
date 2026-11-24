@@ -9,21 +9,34 @@
     :root { --primary: #0f4c81; --bg: #eef2f6; --card: #ffffff; --border: #cbd5e1; --text: #1e293b; }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
-    header { background: var(--primary); color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    header h1 { margin: 0; font-size: 1.05rem; }
-    .layout { display: grid; grid-template-columns: 430px 1fr; gap: 16px; padding: 16px; max-width: 1600px; margin: 0 auto; }
+    header {
+      background: var(--primary); color: #fff; padding: 14px 20px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    header h1 { margin: 0; font-size: 1.15rem; }
+    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .btn-header {
+      padding: 11px 16px; border-radius: 8px; border: none; font-weight: 700;
+      font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.18); transition: transform 0.1s;
+    }
+    .btn-header:hover { transform: translateY(-1px); }
+    .btn-tpl { background: #ffffff; color: #0f4c81; }
+    .btn-tpl:hover { background: #e0f2fe; }
+    .btn-dl { background: #16a34a; color: #fff; font-size: 0.95rem; padding: 11px 20px; }
+    .btn-dl:hover { background: #15803d; }
+    .layout { display: grid; grid-template-columns: 430px 1fr; gap: 16px; padding: 16px; max-width: 1650px; margin: 0 auto; }
     @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-    .scroll-box { max-height: calc(100vh - 85px); overflow-y: auto; }
+    .scroll-box { max-height: calc(100vh - 95px); overflow-y: auto; }
     h2 { margin: 0 0 8px 0; font-size: 0.85rem; color: var(--primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; }
     .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 12px; }
     .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
     label { display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 2px; }
     input[type="text"], select { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
-    .btn { padding: 7px 12px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+    .btn { padding: 8px 12px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
     .btn-blue { background: var(--primary); color: #fff; }
-    .btn-green { background: #15803d; color: #fff; }
     .btn-gray { background: #e2e8f0; color: #1e293b; }
     .btn-red { background: #fee2e2; color: #b91c1c; padding: 3px 7px; font-size: 0.72rem; }
     .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
@@ -39,12 +52,13 @@
 </head>
 <body>
 <header>
-  <h1>Diagrama Unifilar Interactivo • Estilo Plumón (Torres Unidas)</h1>
-  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-    <button class="btn btn-gray" onclick="applyPreset('1OP')">Plantilla 1 Operador</button>
-    <button class="btn btn-gray" onclick="applyPreset('2OP')">Plantilla 2 Operadores</button>
-    <button class="btn btn-gray" onclick="applyPreset('DIRECTA')">Sin Medidor</button>
-    <button class="btn btn-green" onclick="downloadPNG()">⬇ Descargar PNG</button>
+  <h1>Diagrama Unifilar • Estilo Plumón (Torres Unidas)</h1>
+  <div class="header-actions">
+    <button class="btn-header btn-tpl" onclick="applyPreset('MED_OP')">📋 Medidor → Tab. Operador Indep.</button>
+    <button class="btn-header btn-tpl" onclick="applyPreset('CAJA_PASE')">📦 Tab. Principal (Caja de Pase) → Operador</button>
+    <button class="btn-header btn-tpl" onclick="applyPreset('POSTE_TRAFO')">⚡ Poste Transformador (Sin Medidor)</button>
+    <button class="btn-header btn-tpl" onclick="applyPreset('2OP')">🏢 Estándar 2 Operadores</button>
+    <button class="btn-header btn-dl" onclick="downloadPNG()">⬇ DESCARGAR PNG</button>
   </div>
 </header>
 
@@ -55,7 +69,7 @@
       <input type="file" id="photoInput" accept="image/*" multiple style="font-size:0.78rem; width:100%;" />
       <div id="photoTabs" class="chips"></div>
       <div class="photo-viewer" id="photoViewer">
-        <img id="previewImg" title="Clic para hacer Zoom en las llaves térmicas" onclick="this.classList.toggle('zoomed')" />
+        <img id="previewImg" title="Clic para hacer Zoom" onclick="this.classList.toggle('zoomed')" />
       </div>
       <label style="margin-top:8px;">Clic rápido para agregar llave térmica vista en la foto:</label>
       <div class="chips">
@@ -70,22 +84,27 @@
       </div>
     </div>
 
-    <h2>2. Datos del Site y Medidor</h2>
+    <h2>2. Fuente / Acometida y Medidor</h2>
     <div class="box">
       <div class="g2">
         <div><label>Nombre del Site</label><input type="text" id="siteName" value="CORA CORA" oninput="draw()"></div>
-        <div><label>Propietario Medidor</label><input type="text" id="owner" value="TU" oninput="draw()"></div>
+        <div><label>Propietario / Operador</label><input type="text" id="owner" value="TU" oninput="draw()"></div>
       </div>
-      <label style="display:flex; align-items:center; gap:6px; margin:7px 0; cursor:pointer;">
-        <input type="checkbox" id="noMeter" onchange="draw()"> Medidor no ubicado, conexión directa
-      </label>
-      <div class="g2">
+      <div style="margin-top:6px;">
+        <label>Tipo de Alimentación Inicial</label>
+        <select id="sourceType" onchange="draw()">
+          <option value="MEDIDOR">Con Medidor Existente</option>
+          <option value="DIRECTA">Medidor no ubicado, conexión directa</option>
+          <option value="POSTE_TRAFO">Poste Transformador (Sin Medidor)</option>
+        </select>
+      </div>
+      <div class="g2" style="margin-top:6px;">
         <div><label>N° Suministro</label><input type="text" id="serial" value="18211798" oninput="draw()"></div>
         <div><label>Lectura (kWh)</label><input type="text" id="kwh" value="5321.6 KwH" oninput="draw()"></div>
       </div>
     </div>
 
-    <h2>3. Tablero Principal e ITM General</h2>
+    <h2>3. Tablero Principal / Caja de Pase</h2>
     <div class="box">
       <div class="g2">
         <div><label>Tablero Principal</label><input type="text" id="mainBoard" value="Tablero PRINCIPAL TU" oninput="draw()"></div>
@@ -97,7 +116,10 @@
           </select>
         </div>
       </div>
-      <div class="g2" style="margin-top:6px;">
+      <label style="display:flex; align-items:center; gap:6px; margin:7px 0; cursor:pointer; font-weight:700; color:#0f4c81;">
+        <input type="checkbox" id="isPassBox" onchange="draw()"> Usar Tablero Principal como CAJA DE PASE
+      </label>
+      <div class="g2">
         <div><label>ITM General</label><input type="text" id="mainItm" value="3x100A" oninput="draw()"></div>
         <div><label>Nota Puenteo</label><input type="text" id="bridge" placeholder="Ej. Puenteado S con T" oninput="draw()"></div>
       </div>
@@ -115,7 +137,7 @@
       </div>
     </div>
 
-    <h2>4. Derivaciones / Cargas</h2>
+    <h2>4. Tableros Operadores / Derivaciones</h2>
     <div id="branchList"></div>
     <button class="btn btn-blue" style="width:100%;" onclick="addBranch()">+ Agregar Derivación Manual</button>
   </div>
@@ -129,7 +151,7 @@
       <button class="btn btn-gray" onclick="draw()">🔄 Actualizar Trazo</button>
     </div>
     <div class="canvas-area">
-      <canvas id="canvas" width="1260" height="680"></canvas>
+      <canvas id="canvas" width="1280" height="700"></canvas>
     </div>
   </div>
 </div>
@@ -178,21 +200,43 @@ function quickAddItm(calibre) {
 }
 
 function applyPreset(type) {
-  if (type === '1OP') {
-    document.getElementById('noMeter').checked = false;
-    document.getElementById('mainItm').value = '2x63A';
+  if (type === 'MED_OP') {
+    document.getElementById('sourceType').value = 'MEDIDOR';
+    document.getElementById('owner').value = 'ENTEL';
+    document.getElementById('isPassBox').checked = false;
+    document.getElementById('mainBoard').value = 'Tablero OPERADOR ENTEL (Indep.)';
+    document.getElementById('mainItm').value = '3x63A';
+    document.getElementById('phases').value = '3F';
+    branches = [{ name: 'EQUIPOS ENTEL', itm: '2x40A', eq: 'RECTIFICADOR / AA', eqItm: '', ir: '14.5A', is: '14.9A', it: '0.0A' }];
+  } else if (type === 'CAJA_PASE') {
+    document.getElementById('sourceType').value = 'MEDIDOR';
+    document.getElementById('owner').value = 'CLARO';
+    document.getElementById('isPassBox').checked = true;
+    document.getElementById('mainBoard').value = 'Tablero PRINCIPAL (CAJA DE PASE)';
     document.getElementById('phases').value = '1F';
-    branches = [{ name: 'Tablero TELEFONICA', itm: '2x50A', eq: 'EQUIPOS TELEFONICA', eqItm: '2x32A', ir: '14.2A', is: '14.5A', it: '0.0A' }];
+    branches = [{ name: 'Tablero OPERADOR CLARO', itm: '', eq: 'EQUIPOS CLARO', eqItm: '2x63A', ir: '15.8A', is: '16.2A', it: '0.0A' }];
+  } else if (type === 'POSTE_TRAFO') {
+    document.getElementById('sourceType').value = 'POSTE_TRAFO';
+    document.getElementById('owner').value = 'TU';
+    document.getElementById('isPassBox').checked = false;
+    document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
+    document.getElementById('mainItm').value = '3x125A';
+    document.getElementById('phases').value = '3F';
+    branches = [
+      { name: 'Tablero TELEFONICA', itm: '3x100A', eq: 'EQUIPOS TELEFONICA', eqItm: '2x63A', ir: '20.1A', is: '19.5A', it: '0.0A' },
+      { name: 'Tablero CLARO', itm: '3x100A', eq: 'EQUIPOS CLARO', eqItm: '2x80A', ir: '11.8A', is: '12.1A', it: '0.0A' }
+    ];
   } else if (type === '2OP') {
-    document.getElementById('noMeter').checked = false;
+    document.getElementById('sourceType').value = 'MEDIDOR';
+    document.getElementById('owner').value = 'TU';
+    document.getElementById('isPassBox').checked = false;
+    document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
     document.getElementById('mainItm').value = '3x100A';
     document.getElementById('phases').value = '3F';
     branches = [
       { name: 'Tablero CLARO', itm: '3x50A', eq: 'EQUIPOS CLARO', eqItm: '2x40A', ir: '12.1A', is: '15.0A', it: '11.8A' },
       { name: 'Tablero ENTEL', itm: '3x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A', ir: '24.1A', is: '23.1A', it: '20.2A' }
     ];
-  } else if (type === 'DIRECTA') {
-    document.getElementById('noMeter').checked = true;
   }
   renderBranches();
   draw();
@@ -211,7 +255,7 @@ function renderBranches() {
       </div>
       <div class="g2">
         <div><label>Tablero Destino</label><input type="text" value="${b.name}" oninput="branches[${i}].name=this.value; draw();"></div>
-        <div><label>ITM Salida</label><input type="text" value="${b.itm}" oninput="branches[${i}].itm=this.value; draw();"></div>
+        <div><label>ITM Salida (vacío = directo)</label><input type="text" value="${b.itm}" oninput="branches[${i}].itm=this.value; draw();"></div>
       </div>
       <div class="g2" style="margin-top:5px;">
         <div><label>Carga Final</label><input type="text" value="${b.eq}" oninput="branches[${i}].eq=this.value; draw();"></div>
@@ -247,13 +291,18 @@ function rect(x, y, w, h, color = '#18181b') {
   line(x + w + o, y + h, x - o, y + h, color); line(x, y + h + o, x, y - o, color);
 }
 
+function circle(cx, cy, r, color = '#18181b') {
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.6;
+  ctx.beginPath(); ctx.arc(cx + jit(0.5), cy + jit(0.5), r, 0, Math.PI * 2);
+  ctx.stroke(); ctx.restore();
+}
+
 function txt(t, x, y, size = 18, color = '#18181b', align = 'center', bold = false) {
   if (!t) return;
   ctx.save(); ctx.font = `${bold ? '700' : '400'} ${size}px 'Kalam', cursive`;
   ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
   ctx.fillText(t, x, y); ctx.restore();
 }
-
 function breaker(x, y, amp) {
   line(x - 22, y, x, y); line(x - 14, y - 15, x, y);
   line(x, y, x, y - 16); line(x, y - 16, x + 12, y - 16); line(x + 12, y - 16, x + 12, y);
@@ -261,7 +310,7 @@ function breaker(x, y, amp) {
   ctx.save(); ctx.strokeStyle = '#18181b'; ctx.lineWidth = 2.6;
   ctx.beginPath(); ctx.arc(x + 28, y - 10, 6, Math.PI, 0); ctx.stroke(); ctx.restore();
   line(x + 34, y - 10, x + 34, y); line(x + 34, y, x + 52, y);
-  if (amp) txt(amp, x + 16, y + 21, 18, '#c81e1e', 'center', true);
+  if (amp) txt(amp, x + 16, y + 23, 18, '#c81e1e', 'center', true);
 }
 
 function slashes(x, y, mode) {
@@ -272,8 +321,21 @@ function slashes(x, y, mode) {
   }
 }
 
+function drawPosteTransformador(x, y) {
+  line(x, y - 85, x, y + 85, '#18181b', 3.4);
+  line(x - 28, y - 72, x + 28, y - 72, '#18181b', 3);
+  line(x - 20, y - 80, x - 20, y - 72);
+  line(x + 20, y - 80, x + 20, y - 72);
+  circle(x + 26, y - 12, 18, '#1e3a8a');
+  circle(x + 26, y + 12, 18, '#1e3a8a');
+  line(x + 44, y, x + 85, y, '#18181b', 2.6);
+  txt('POSTE', x + 22, y - 92, 16, '#18181b', 'center', true);
+  txt('Sin medidor / Conexión directa', x + 75, y + 50, 14, '#c81e1e', 'center', true);
+  txt('TRANSFORMADOR', x + 75, y + 68, 15, '#c81e1e', 'center', true);
+}
+
 function draw() {
-  canvas.height = Math.max(640, 250 + branches.length * 160);
+  canvas.height = Math.max(660, 260 + branches.length * 165);
   ctx.fillStyle = '#fdfdfb'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   if (document.getElementById('gridBg').checked) {
@@ -284,61 +346,85 @@ function draw() {
 
   const site = document.getElementById('siteName').value.toUpperCase();
   const owner = document.getElementById('owner').value;
-  const noMeter = document.getElementById('noMeter').checked;
+  const sourceType = document.getElementById('sourceType').value;
   const serial = document.getElementById('serial').value;
   const kwh = document.getElementById('kwh').value;
   const mainBoard = document.getElementById('mainBoard').value;
   const phases = document.getElementById('phases').value;
+  const isPassBox = document.getElementById('isPassBox').checked;
   const mainItm = document.getElementById('mainItm').value;
   const bridge = document.getElementById('bridge').value;
-  const y0 = 220;
+  const y0 = 225;
 
   txt(`DIAGRAMA UNIFILAR DEL SITE "${site}"`, canvas.width / 2, 35, 23, '#0f172a', 'center', true);
   line(canvas.width / 2 - 230, 50, canvas.width / 2 + 230, 50);
 
-  if (!noMeter) {
+  if (sourceType === 'MEDIDOR') {
     txt('Medidor', 110, 90, 19, '#18181b', 'center', true);
     txt(owner, 110, 112, 19, '#1e3a8a', 'center', true);
     rect(50, 130, 120, 45); txt(serial, 110, 153, 16, '#18181b', 'center', true);
     rect(50, 182, 120, 125); breaker(90, y0, '');
     rect(68, 258, 84, 32); txt(kwh, 110, 275, 15, '#18181b', 'center', true);
     line(142, y0, 300, y0); slashes(225, y0, phases);
+  } else if (sourceType === 'POSTE_TRAFO') {
+    drawPosteTransformador(85, y0);
+    line(170, y0, 300, y0); slashes(240, y0, phases);
   } else {
     line(40, y0, 300, y0); slashes(245, y0, phases);
     txt('Medidor no ubicado,', 140, y0 - 32, 16, '#c81e1e', 'center', true);
     txt('conexión directa', 140, y0 - 13, 16, '#c81e1e', 'center', true);
   }
 
-  const boxH = Math.max(230, 130 + branches.length * 145);
+  const boxH = Math.max(235, 135 + branches.length * 150);
   txt(mainBoard, 470, 98, 20, '#18181b', 'center', true);
   rect(300, 120, 340, boxH);
-  txt('Interruptor General', 385, 165, 16, '#18181b', 'center', true);
-  breaker(365, y0, mainItm);
-  if (bridge) txt(bridge, 385, y0 + 42, 14, '#1e3a8a', 'center', true);
-
-  const ey = bridge ? y0 + 65 : y0 + 50;
-  txt(`Vrs=${document.getElementById('vrs').value}`, 320, ey, 15, '#18181b', 'left');
-  txt(`Vst=${document.getElementById('vst').value}`, 320, ey + 20, 15, '#18181b', 'left');
-  txt(`Vrt=${document.getElementById('vrt').value}`, 320, ey + 40, 15, '#18181b', 'left');
-  txt(`Ir=${document.getElementById('ir').value}`, 425, ey, 15, '#1e3a8a', 'left');
-  txt(`Is=${document.getElementById('is').value}`, 425, ey + 20, 15, '#1e3a8a', 'left');
-  txt(`It=${document.getElementById('it').value}`, 425, ey + 40, 15, '#1e3a8a', 'left');
 
   const busX = 505;
-  if (branches.length > 0) {
+  if (isPassBox) {
+    line(300, y0, busX, y0, '#18181b', 2.8);
+    circle(400, y0, 5, '#c81e1e');
+    txt('CAJA DE PASE', 400, y0 - 28, 17, '#c81e1e', 'center', true);
+    txt('(Paso directo / Empalme)', 400, y0 - 10, 14, '#475569', 'center');
+  } else {
+    txt('Interruptor General', 385, 165, 16, '#18181b', 'center', true);
+    breaker(365, y0, mainItm);
     line(417, y0, busX, y0);
-    if (branches.length > 1) line(busX, y0, busX, y0 + (branches.length - 1) * 145, '#18181b', 3.2);
+    if (bridge) txt(bridge, 385, y0 + 44, 14, '#1e3a8a', 'center', true);
+  }
+
+  const ey = bridge ? y0 + 68 : y0 + 52;
+  txt(`Vrs=${document.getElementById('vrs').value}`, 318, ey, 15, '#18181b', 'left');
+  txt(`Vst=${document.getElementById('vst').value}`, 318, ey + 20, 15, '#18181b', 'left');
+  txt(`Vrt=${document.getElementById('vrt').value}`, 318, ey + 40, 15, '#18181b', 'left');
+  txt(`Ir=${document.getElementById('ir').value}`, 420, ey, 15, '#1e3a8a', 'left');
+  txt(`Is=${document.getElementById('is').value}`, 420, ey + 20, 15, '#1e3a8a', 'left');
+  txt(`It=${document.getElementById('it').value}`, 420, ey + 40, 15, '#1e3a8a', 'left');
+
+  if (branches.length > 0) {
+    if (branches.length > 1) line(busX, y0, busX, y0 + (branches.length - 1) * 150, '#18181b', 3.2);
     branches.forEach((b, i) => {
-      const by = y0 + i * 145;
-      line(busX, by, 535, by); breaker(555, by, b.itm);
-      line(607, by, 750, by); slashes(680, by, b.itm.startsWith('3') ? '3F' : '1F');
-      txt(`Ir=${b.ir} Is=${b.is} It=${b.it}`, 680, by + 22, 14, '#1e3a8a', 'center');
-      txt(b.name, 870, by - 64, 17, '#18181b', 'center', true);
-      rect(750, by - 50, 460, 108);
-      if (b.eqItm) { line(750, by, 805, by); breaker(825, by, b.eqItm); line(877, by, 1005, by); }
-      else { line(750, by, 1005, by); }
-      rect(1005, by - 24, 185, 48, '#1e3a8a');
-      txt(b.eq || b.name, 1097, by, 16, '#1e3a8a', 'center', true);
+      const by = y0 + i * 150;
+      if (b.itm) {
+        line(busX, by, 535, by);
+        breaker(555, by, b.itm);
+        line(607, by, 760, by);
+      } else {
+        line(busX, by, 760, by);
+      }
+      slashes(690, by, (b.itm || mainItm).startsWith('3') ? '3F' : '1F');
+      txt(`Ir=${b.ir}  Is=${b.is}  It=${b.it}`, 705, by + 26, 14, '#1e3a8a', 'center');
+
+      txt(b.name, 880, by - 64, 17, '#18181b', 'center', true);
+      rect(760, by - 50, 460, 108);
+      if (b.eqItm) {
+        line(760, by, 815, by);
+        breaker(835, by, b.eqItm);
+        line(887, by, 1010, by);
+      } else {
+        line(760, by, 1010, by);
+      }
+      rect(1010, by - 24, 185, 48, '#1e3a8a');
+      txt(b.eq || b.name, 1102, by, 16, '#1e3a8a', 'center', true);
     });
   }
 }
@@ -355,3 +441,4 @@ renderBranches();
 document.fonts.ready.then(() => draw());
 </script>
 </body>
+</html>
