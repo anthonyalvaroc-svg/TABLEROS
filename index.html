@@ -1,0 +1,713 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de Diagrama Unifilar - Estilo Plumón</title>
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Kalam:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilos.css" />
+  <script src="https://jsdelivr.net"></script>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Generador de Diagrama Unifilar • Estilo Plumón</h1>
+    <span>Reconocimiento de Llaves Térmicas y Medidores • Estándar Torres Unidas</span>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <button class="btn btn-outline" onclick="loadExample()">Cargar Ejemplo</button>
+    <button class="btn btn-success" onclick="downloadDiagram()">⬇ Descargar PNG</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- PANEL IZQUIERDO -->
+  <div class="panel scroll-panel">
+    <h2>1. Foto de Tablero / Medidor (OCR)</h2>
+    <div class="section-box">
+      <label>Sube fotos de llaves térmicas o medidor:</label>
+      <input type="file" id="imageLoader" accept="image/*" multiple />
+      <div class="gallery-grid" id="photoGallery"></div>
+
+      <div id="ocrControls" style="display:none; margin-top:10px;">
+        <div class="grid-2">
+          <select id="photoRole">
+            <option value="AUTO">Auto (Tablero + Medidor)</option>
+            <option value="TABLERO">Solo Llaves Térmicas</option>
+            <option value="MEDIDOR">Solo Medidor (kWh/Serie)</option>
+          </select>
+          <button class="btn btn-primary" onclick="processAllPhotos()">⚡ Reconocer Datos</button>
+        </div>
+        <div class="status-ocr" id="ocrStatus"></div>
+      </div>
+
+      <div class="detected-box" id="detectedBox">
+        <div class="detected-title">Llaves detectadas (clic para añadir):</div>
+        <div class="chips-wrap" id="detectedChips"></div>
+      </div>
+    </div>
+
+    <h2>2. Datos del Site y Medidor</h2>
+    <div class="section-box">
+      <div class="grid-2">
+        <div>
+          <label>Nombre del Site</label>
+          <input type="text" id="siteName" value="CORA CORA" oninput="draw()" />
+        </div>
+        <div>
+          <label>Operador / Cliente</label>
+          <input type="text" id="medidorOwner" value="TU" oninput="draw()" />
+        </div>
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="noMeter" onchange="toggleMeterFields(); draw();" />
+        Medidor no ubicado / Conexión directa (LMT / LBT)
+      </label>
+
+      <div id="meterFields" class="grid-2">
+        <div>
+          <label>N° Suministro / Serie</label>
+          <input type="text" id="meterSerial" value="18211798" oninput="draw()" />
+        </div>
+        <div>
+          <label>Lectura (kWh)</label>
+          <input type="text" id="meterKwh" value="5321.6 KwH" oninput="draw()" />
+        </div>
+      </div>
+    </div>
+
+    <h2>3. Tablero Principal e ITM General</h2>
+    <div class="section-box">
+      <div class="grid-2">
+        <div>
+          <label>Nombre Tablero Principal</label>
+          <input type="text" id="mainBoardName" value="Tablero PRINCIPAL TU" oninput="draw()" />
+        </div>
+        <div>
+          <label>Acometida / Fases</label>
+          <select id="supplyType" onchange="draw()">
+            <option value="3F">Trifásico (R-S-T)</option>
+            <option value="3F+N">Trifásico + Neutro (3F+N)</option>
+            <option value="1F-2F">Monofásico 2 Fases (R-S)</option>
+            <option value="1F+N">Monofásico 1 Fase + Neutro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:8px;">
+        <div>
+          <label>ITM General (Ej. 3x100A)</label>
+          <input type="text" id="mainItm" value="3x100A" oninput="draw()" />
+        </div>
+        <div>
+          <label>Nota Puenteo (opcional)</label>
+          <input type="text" id="bridgeNote" placeholder="Ej. Puenteado S con T" oninput="draw()" />
+        </div>
+      </div>
+
+      <label style="margin-top:8px;">Voltajes (Vrs / Vst / Vrt)</label>
+      <div class="grid-3">
+        <input type="text" id="vrs" value="218V" oninput="draw()" />
+        <input type="text" id="vst" value="216V" oninput="draw()" />
+        <input type="text" id="vrt" value="219V" oninput="draw()" />
+      </div>
+
+      <label style="margin-top:6px;">Corrientes (Ir / Is / It)</label>
+      <div class="grid-3">
+        <input type="text" id="ir" value="19.25A" oninput="draw()" />
+        <input type="text" id="is" value="18.79A" oninput="draw()" />
+        <input type="text" id="it" value="0.0A" oninput="draw()" />
+      </div>
+    </div>
+
+    <h2>4. Derivaciones / Llaves Secundarias</h2>
+    <div id="branchesContainer"></div>
+    <button class="btn btn-primary" style="width:100%;" onclick="addBranch()">+ Agregar Derivación</button>
+  </div>
+
+  <!-- PANEL DERECHO -->
+  <div class="panel">
+    <div class="canvas-toolbar">
+      <div class="toolbar-options">
+        <label class="checkbox-row">
+          <input type="checkbox" id="paperGrid" checked onchange="draw()" />
+          Hoja cuadriculada
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="handJitter" checked onchange="draw()" />
+          Trazo plumón a mano
+        </label>
+        <select id="markerWidth" onchange="draw()" style="width:auto;">
+          <option value="2">Plumón Fino</option>
+          <option value="2.8" selected>Plumón Medio</option>
+          <option value="3.6">Plumón Grueso</option>
+        </select>
+      </div>
+      <button class="btn btn-outline" onclick="draw()">🔄 Redibujar</button>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="diagramCanvas" width="1280" height="720"></canvas>
+    </div>
+  </div>
+</div>
+
+<canvas id="ocrPreprocessCanvas" style="display:none;"></canvas>
+<script src="ocr.js"></script>
+<script src="dibujo.js"></script>
+</body>
+</html>
+:root {
+  --primary: #0f4c81;
+  --primary-hover: #0a355c;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --border: #cbd5e1;
+  --text: #1e293b;
+  --muted: #64748b;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+
+header {
+  background: var(--primary); color: #fff; padding: 12px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+header h1 { margin: 0; font-size: 1.1rem; }
+header span { font-size: 0.8rem; opacity: 0.9; }
+
+.container {
+  display: grid; grid-template-columns: 450px 1fr; gap: 18px;
+  padding: 18px; max-width: 1650px; margin: 0 auto;
+}
+@media (max-width: 1050px) { .container { grid-template-columns: 1fr; } }
+
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.scroll-panel { max-height: calc(100vh - 85px); overflow-y: auto; }
+
+.panel h2 {
+  margin: 0 0 10px 0; font-size: 0.88rem; color: var(--primary);
+  border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; text-transform: uppercase;
+}
+
+.section-box {
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 12px; margin-bottom: 14px;
+}
+
+.section-title {
+  font-weight: 600; font-size: 0.84rem; margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+
+label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--muted); margin-bottom: 3px; }
+input[type="text"], select {
+  width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1;
+  border-radius: 6px; font-size: 0.83rem; background: #fff;
+}
+input[type="file"] { font-size: 0.8rem; width: 100%; }
+
+.checkbox-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; margin: 6px 0; cursor: pointer; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 12px; border-radius: 6px; border: none; font-weight: 600;
+  font-size: 0.82rem; cursor: pointer;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-success { background: #15803d; color: #fff; }
+.btn-outline { background: #fff; border: 1px solid #cbd5e1; color: var(--text); }
+.btn-danger { background: #fee2e2; color: #b91c1c; padding: 4px 8px; font-size: 0.74rem; }
+.btn-chip {
+  background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;
+  padding: 4px 8px; border-radius: 5px; font-size: 0.76rem; font-weight: 600; cursor: pointer;
+}
+
+.branch-card {
+  background: #fff; border: 1px solid #cbd5e1; border-left: 4px solid var(--primary);
+  border-radius: 6px; padding: 10px; margin-bottom: 10px;
+}
+
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 8px; margin-top: 8px; }
+.gallery-item { border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; text-align: center; padding: 4px; }
+.gallery-item img { width: 100%; height: 78px; object-fit: cover; border-radius: 4px; cursor: zoom-in; }
+.gallery-item span { display: block; font-size: 0.68rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+
+.detected-box { margin-top: 10px; padding: 8px; background: #fff; border: 1px dashed #94a3b8; border-radius: 6px; display: none; }
+.detected-title { font-size: 0.76rem; font-weight: 700; }
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.status-ocr { font-size: 0.77rem; color: var(--primary); margin-top: 6px; font-weight: 600; }
+
+.canvas-toolbar, .toolbar-options { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.canvas-wrapper { background: #e2e8f0; border-radius: 8px; padding: 14px; overflow: auto; display: flex; justify-content: center; }
+canvas#diagramCanvas { background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15); border-radius: 4px; max-width: 100%; height: auto; }
+let uploadedImages = [];
+
+document.getElementById('imageLoader').addEventListener('change', function(e) {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+
+  uploadedImages = [];
+  const gallery = document.getElementById('photoGallery');
+  gallery.innerHTML = '';
+
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const dataUrl = event.target.result;
+      uploadedImages.push({ name: file.name, src: dataUrl });
+
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.innerHTML = `
+        <img src="${dataUrl}" title="${file.name}" onclick="window.open('${dataUrl}', '_blank')" />
+        <span>${file.name}</span>
+      `;
+      gallery.appendChild(item);
+
+      document.getElementById('ocrControls').style.display = 'block';
+      document.getElementById('ocrStatus').textContent = `${uploadedImages.length} foto(s) lista(s).`;
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+function preprocessImageForOCR(dataUrl) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const preCanvas = document.getElementById('ocrPreprocessCanvas');
+      const pCtx = preCanvas.getContext('2d');
+      const scale = img.width < 1200 ? 1.6 : 1.0;
+      preCanvas.width = img.width * scale;
+      preCanvas.height = img.height * scale;
+
+      pCtx.drawImage(img, 0, 0, preCanvas.width, preCanvas.height);
+      const imgData = pCtx.getImageData(0, 0, preCanvas.width, preCanvas.height);
+      const d = imgData.data;
+
+      const contrast = 1.45;
+      const intercept = 128 * (1 - contrast);
+      for (let i = 0; i < d.length; i += 4) {
+        const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+        const val = Math.min(255, Math.max(0, gray * contrast + intercept));
+        d[i] = d[i + 1] = d[i + 2] = val;
+      }
+      pCtx.putImageData(imgData, 0, 0);
+      resolve(preCanvas.toDataURL('image/png'));
+    };
+    img.src = dataUrl;
+  });
+}
+
+async function processAllPhotos() {
+  if (!uploadedImages.length) return;
+  const status = document.getElementById('ocrStatus');
+  const role = document.getElementById('photoRole').value;
+  let combinedText = '';
+
+  for (let i = 0; i < uploadedImages.length; i++) {
+    status.textContent = `Leyendo foto ${i + 1} de ${uploadedImages.length}...`;
+    try {
+      const enhancedSrc = await preprocessImageForOCR(uploadedImages[i].src);
+      const { data: { text } } = await Tesseract.recognize(enhancedSrc, 'spa');
+      combinedText += ' \n ' + text;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  status.textContent = 'Lectura completada.';
+  analyzeElectricalPhotoText(combinedText, role);
+}
+
+function analyzeElectricalPhotoText(rawText, role) {
+  const clean = rawText.replace(/\n/g, ' ');
+  const upper = clean.toUpperCase();
+  const standardAmps =;
+  const detectedBreakers = [];
+  let match;
+
+  // 1. Formato 3x100A / 2x63A
+  const explicitRegex = /\b([1-4])\s*[xX*]\s*(\d{2,3})\s*A?\b/g;
+  while ((match = explicitRegex.exec(clean)) !== null) {
+    const poles = parseInt(match[1], 10);
+    const amp = parseInt(match[2], 10);
+    if (standardAmps.includes(amp)) {
+      detectedBreakers.push({ label: `${poles}x${amp}A`, poles, amp });
+    }
+  }
+
+  // 2. Códigos físicos de breakers DIN (C16, C32, C63, D100, In=63A)
+  const dinRegex = /\b(?:[BCD]|IN\s*[=:]?\s*)(\d{2,3})\s*A?\b/gi;
+  while ((match = dinRegex.exec(upper)) !== null) {
+    const amp = parseInt(match[1], 10);
+    if (standardAmps.includes(amp)) {
+      const poles = amp >= 80 ? 3 : 2;
+      detectedBreakers.push({ label: `${poles}x${amp}A`, poles, amp });
+    }
+  }
+
+  // 3. Amperajes sueltos (63A, 100A)
+  const ampOnlyRegex = /\b(\d{2,3})\s*A\b/g;
+  while ((match = ampOnlyRegex.exec(upper)) !== null) {
+    const amp = parseInt(match[1], 10);
+    if (standardAmps.includes(amp)) {
+      const poles = amp >= 80 ? 3 : 2;
+      detectedBreakers.push({ label: `${poles}x${amp}A`, poles, amp });
+    }
+  }
+
+  detectedBreakers.sort((a, b) => b.amp - a.amp);
+
+  if ((role === 'AUTO' || role === 'TABLERO') && detectedBreakers.length > 0) {
+    const general = detectedBreakers[0];
+    document.getElementById('mainItm').value = general.label;
+    if (general.poles === 3) {
+      document.getElementById('supplyType').value = upper.includes('3F+N') ? '3F+N' : '3F';
+    } else if (general.poles === 2) {
+      document.getElementById('supplyType').value = '1F-2F';
+    }
+
+    const subBreakers = detectedBreakers.slice(1);
+    if (subBreakers.length > 0) {
+      branches = subBreakers.slice(0, 6).map((b, idx) => ({
+        name: `CIRCUITO ${idx + 1}`,
+        itm: b.label,
+        subBoard: '',
+        subItm: '',
+        ir: '0.0A',
+        is: '0.0A',
+        it: '0.0A'
+      }));
+    }
+  }
+
+  if (role === 'AUTO' || role === 'MEDIDOR') {
+    const kwhMatch = clean.match(/(\d{3,8}(?:[\.,]\d{1,2})?)\s*k?w\s*h/i);
+    if (kwhMatch) document.getElementById('meterKwh').value = `${kwhMatch[1]} KwH`;
+
+    const serialMatches = clean.match(/\b\d{6,10}\b/g);
+    if (serialMatches && serialMatches.length > 0) {
+      document.getElementById('meterSerial').value = serialMatches[0];
+      document.getElementById('noMeter').checked = false;
+      toggleMeterFields();
+    }
+  }
+
+  if (upper.includes('380')) {
+    document.getElementById('vrs').value = '380V';
+    document.getElementById('vst').value = '380V';
+    document.getElementById('vrt').value = '380V';
+  } else if (upper.includes('220')) {
+    document.getElementById('vrs').value = '220V';
+    document.getElementById('vst').value = '220V';
+    document.getElementById('vrt').value = '220V';
+  }
+
+  if (upper.includes('TELEFONICA') || upper.includes('MOVISTAR')) document.getElementById('medidorOwner').value = 'TELEFONICA';
+  else if (upper.includes('CLARO')) document.getElementById('medidorOwner').value = 'CLARO';
+  else if (upper.includes('ENTEL')) document.getElementById('medidorOwner').value = 'ENTEL';
+
+  renderDetectedChips(detectedBreakers);
+  renderBranchesUI();
+  draw();
+}
+
+function renderDetectedChips(breakers) {
+  const box = document.getElementById('detectedBox');
+  const wrap = document.getElementById('detectedChips');
+  wrap.innerHTML = '';
+  box.style.display = 'block';
+
+  if (!breakers.length) {
+    wrap.innerHTML = '<span style="font-size:0.75rem; color:#64748b;">No se leyeron calibres claros.</span>';
+    return;
+  }
+
+  breakers.forEach((b) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-chip';
+    btn.textContent = `+ ${b.label}`;
+    btn.onclick = () => {
+      branches.push({
+        name: `CARGA (${b.label})`, itm: b.label, subBoard: '', subItm: '',
+        ir: '0.0A', is: '0.0A', it: '0.0A'
+      });
+      renderBranchesUI();
+      draw();
+    };
+    wrap.appendChild(btn);
+  });
+}
+const canvas = document.getElementById('diagramCanvas');
+const ctx = canvas.getContext('2d');
+
+let branches = [
+  { name: 'TABLERO CLARO', itm: '2x63A', subBoard: 'EQUIPOS CLARO', subItm: '2x40A', ir: '13.87A', is: '15.29A', it: '0.00A' },
+  { name: 'TABLERO ENTEL', itm: '3x63A', subBoard: 'EQUIPOS ENTEL', subItm: '2x40A', ir: '11.81A', is: '12.25A', it: '0.00A' }
+];
+
+function toggleMeterFields() {
+  const noMeter = document.getElementById('noMeter').checked;
+  document.getElementById('meterFields').style.opacity = noMeter ? '0.4' : '1';
+}
+
+function renderBranchesUI() {
+  const container = document.getElementById('branchesContainer');
+  container.innerHTML = '';
+  branches.forEach((b, i) => {
+    const div = document.createElement('div');
+    div.className = 'branch-card';
+    div.innerHTML = `
+      <div class="section-title">
+        <span>Derivación #${i + 1}</span>
+        <button class="btn btn-danger" onclick="removeBranch(${i})">Eliminar</button>
+      </div>
+      <div class="grid-2">
+        <div><label>Carga / Tablero</label><input type="text" value="${b.name}" oninput="branches[${i}].name=this.value; draw();" /></div>
+        <div><label>ITM Derivación</label><input type="text" value="${b.itm}" oninput="branches[${i}].itm=this.value; draw();" /></div>
+      </div>
+      <div class="grid-2" style="margin-top:6px;">
+        <div><label>Sub-tablero / Equipos</label><input type="text" value="${b.subBoard}" oninput="branches[${i}].subBoard=this.value; draw();" /></div>
+        <div><label>ITM Sub-tablero</label><input type="text" value="${b.subItm}" oninput="branches[${i}].subItm=this.value; draw();" /></div>
+      </div>
+      <div class="grid-3" style="margin-top:6px;">
+        <div><label>Ir (A)</label><input type="text" value="${b.ir}" oninput="branches[${i}].ir=this.value; draw();" /></div>
+        <div><label>Is (A)</label><input type="text" value="${b.is}" oninput="branches[${i}].is=this.value; draw();" /></div>
+        <div><label>It (A)</label><input type="text" value="${b.it}" oninput="branches[${i}].it=this.value; draw();" /></div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function addBranch() {
+  branches.push({ name: 'EQUIPOS TELEFONICA', itm: '2x63A', subBoard: '', subItm: '', ir: '12.0A', is: '12.1A', it: '0.0A' });
+  renderBranchesUI();
+  draw();
+}
+
+function removeBranch(idx) {
+  branches.splice(idx, 1);
+  renderBranchesUI();
+  draw();
+}
+
+function loadExample() {
+  document.getElementById('siteName').value = 'CORA CORA';
+  document.getElementById('medidorOwner').value = 'TU';
+  document.getElementById('noMeter').checked = false;
+  document.getElementById('meterSerial').value = '18211798';
+  document.getElementById('meterKwh').value = '5321.6 KwH';
+  document.getElementById('mainBoardName').value = 'TABLERO MDP / PRINCIPAL TU';
+  document.getElementById('supplyType').value = '3F';
+  document.getElementById('mainItm').value = '3x100A';
+  document.getElementById('vrs').value = '218V';
+  document.getElementById('vst').value = '216V';
+  document.getElementById('vrt').value = '219V';
+  document.getElementById('ir').value = '12.2A';
+  document.getElementById('is').value = '15.1A';
+  document.getElementById('it').value = '25.3A';
+  branches = [
+    { name: 'Tablero CLARO', itm: '3x50A', subBoard: 'EQUIPOS CLARO', subItm: '2x40A', ir: '12.1A', is: '15.0A', it: '11.8A' },
+    { name: 'Tablero ENTEL', itm: '3x63A', subBoard: 'EQUIPOS ENTEL', subItm: '2x40A', ir: '24.1A', is: '23.1A', it: '20.2A' }
+  ];
+  toggleMeterFields();
+  renderBranchesUI();
+  draw();
+}
+
+function jitter(amount = 1.2) {
+  return document.getElementById('handJitter').checked ? (Math.random() - 0.5) * amount : 0;
+}
+
+function markerLine(x1, y1, x2, y2, color = '#18181b', width = null) {
+  const w = width || parseFloat(document.getElementById('markerWidth').value);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = w;
+  ctx.lineCap = 'round';
+  const dist = Math.hypot(x2 - x1, y2 - y1);
+  const steps = Math.max(2, Math.floor(dist / 35));
+  ctx.beginPath();
+  ctx.moveTo(x1 + jitter(0.8), y1 + jitter(0.8));
+  for (let i = 1; i < steps; i++) {
+    const t = i / steps;
+    ctx.lineTo(x1 + (x2 - x1) * t + jitter(0.9), y1 + (y2 - y1) * t + jitter(0.9));
+  }
+  ctx.lineTo(x2 + jitter(0.8), y2 + jitter(0.8));
+  ctx.stroke();
+  ctx.restore();
+}
+
+function markerRect(x, y, w, h, color = '#18181b') {
+  const ov = document.getElementById('handJitter').checked ? 3 : 0;
+  markerLine(x - ov, y, x + w + ov, y, color);
+  markerLine(x + w, y - ov, x + w, y + h + ov, color);
+  markerLine(x + w + ov, y + h, x - ov, y + h, color);
+  markerLine(x, y + h + ov, x, y - ov, color);
+}
+
+function markerText(text, x, y, size = 18, color = '#18181b', align = 'center', bold = false) {
+  if (!text) return;
+  ctx.save();
+  ctx.font = `${bold ? '700' : '400'} ${size}px 'Kalam', cursive`;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = 'middle';
+  ctx.translate(x, y);
+  if (document.getElementById('handJitter').checked) ctx.rotate((Math.random() - 0.5) * 0.018);
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+}
+
+function drawBreakerSymbol(x, y, labelRed) {
+  markerLine(x - 25, y, x, y);
+  markerLine(x - 16, y - 16, x, y);
+  markerLine(x, y, x, y - 18);
+  markerLine(x, y - 18, x + 12, y - 18);
+  markerLine(x + 12, y - 18, x + 12, y);
+  markerLine(x + 12, y, x + 22, y);
+  markerLine(x + 22, y, x + 22, y - 16);
+  ctx.save();
+  ctx.strokeStyle = '#18181b';
+  ctx.lineWidth = parseFloat(document.getElementById('markerWidth').value);
+  ctx.beginPath();
+  ctx.arc(x + 28, y - 12, 6, Math.PI, 0, false);
+  ctx.stroke();
+  ctx.restore();
+  markerLine(x + 34, y - 12, x + 34, y);
+  markerLine(x + 34, y, x + 55, y);
+  if (labelRed) markerText(labelRed, x + 16, y + 22, 19, '#c81e1e', 'center', true);
+}
+
+function drawPhaseSlashes(x, y, supplyType) {
+  const count = supplyType === '3F+N' ? 4 : (supplyType.startsWith('3F') ? 3 : 2);
+  const startX = x - ((count - 1) * 7) / 2;
+  for (let i = 0; i < count; i++) {
+    const sx = startX + i * 7;
+    markerLine(sx - 6, y - 12, sx + 6, y + 12, '#1e3a8a', 2.2);
+  }
+  const label = supplyType === '3F+N' ? 'R-S-T-N' : (supplyType.startsWith('3F') ? 'R-S-T' : 'R-S');
+  markerText(label, x, y - 22, 14, '#1e3a8a', 'center', true);
+}
+
+function draw() {
+  canvas.height = Math.max(660, 260 + branches.length * 165);
+  ctx.fillStyle = '#fdfdfb';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (document.getElementById('paperGrid').checked) {
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.22)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 24) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+    for (let y = 0; y < canvas.height; y += 24) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+  }
+
+  const siteName = document.getElementById('siteName').value.trim();
+  const owner = document.getElementById('medidorOwner').value.trim();
+  const noMeter = document.getElementById('noMeter').checked;
+  const serial = document.getElementById('meterSerial').value.trim();
+  const kwh = document.getElementById('meterKwh').value.trim();
+  const mainBoardName = document.getElementById('mainBoardName').value.trim();
+  const supplyType = document.getElementById('supplyType').value;
+  const mainItm = document.getElementById('mainItm').value.trim();
+  const bridgeNote = document.getElementById('bridgeNote').value.trim();
+  const vrs = document.getElementById('vrs').value.trim();
+  const vst = document.getElementById('vst').value.trim();
+  const vrt = document.getElementById('vrt').value.trim();
+  const ir = document.getElementById('ir').value.trim();
+  const is = document.getElementById('is').value.trim();
+  const it = document.getElementById('it').value.trim();
+
+  markerText(`DIAGRAMA UNIFILAR DEL SITE "${siteName.toUpperCase()}"`, canvas.width / 2, 36, 24, '#0f172a', 'center', true);
+  markerLine(canvas.width / 2 - 240, 52, canvas.width / 2 + 240, 52, '#0f172a', 2);
+
+  const baseY = 230;
+  if (!noMeter) {
+    markerText('Medidor', 115, 95, 20, '#18181b', 'center', true);
+    markerText(owner, 115, 118, 20, '#1e3a8a', 'center', true);
+    markerRect(55, 138, 120, 48);
+    if (serial) markerText(serial, 115, 163, 17, '#18181b', 'center', true);
+    markerRect(55, 192, 120, 125);
+    drawBreakerSymbol(95, baseY, '');
+    markerRect(72, 268, 86, 34);
+    markerText(kwh || 'KwH', 115, 286, 16, '#18181b', 'center', true);
+    markerLine(150, baseY, 310, baseY);
+    drawPhaseSlashes(235, baseY, supplyType);
+  } else {
+    markerLine(40, baseY, 310, baseY);
+    drawPhaseSlashes(250, baseY, supplyType);
+    markerText('Medidor no ubicado,', 140, baseY - 34, 17, '#c81e1e', 'center', true);
+    markerText('conexión directa', 140, baseY - 14, 17, '#c81e1e', 'center', true);
+  }
+
+  const mainBoxH = Math.max(240, 140 + branches.length * 145);
+  markerText(mainBoardName, 480, 102, 21, '#18181b', 'center', true);
+  markerRect(310, 125, 340, mainBoxH);
+  markerText('Interruptor', 395, 162, 17, '#18181b', 'center', true);
+  markerText('General', 395, 182, 17, '#18181b', 'center', true);
+  drawBreakerSymbol(375, baseY, mainItm);
+  if (bridgeNote) markerText(bridgeNote, 395, baseY + 44, 14, '#1e3a8a', 'center', true);
+
+  const elecY = bridgeNote ? baseY + 68 : baseY + 52;
+  markerText(`Vrs = ${vrs}`, 330, elecY, 16, '#18181b', 'left');
+  markerText(`Vst = ${vst}`, 330, elecY + 22, 16, '#18181b', 'left');
+  markerText(`Vrt = ${vrt}`, 330, elecY + 44, 16, '#18181b', 'left');
+  markerText(`Ir = ${ir}`, 435, elecY, 16, '#1e3a8a', 'left');
+  markerText(`Is = ${is}`, 435, elecY + 22, 16, '#1e3a8a', 'left');
+  markerText(`It = ${it}`, 435, elecY + 44, 16, '#1e3a8a', 'left');
+
+  const busX = 515;
+  if (branches.length > 0) {
+    markerLine(430, baseY, busX, baseY);
+    if (branches.length > 1) markerLine(busX, baseY, busX, baseY + (branches.length - 1) * 145, '#18181b', 3.4);
+
+    branches.forEach((b, idx) => {
+      const by = baseY + idx * 145;
+      markerLine(busX, by, 545, by);
+      drawBreakerSymbol(565, by, b.itm);
+      markerLine(620, by, 760, by);
+      drawPhaseSlashes(695, by, b.itm.startsWith('3') ? '3F' : '1F-2F');
+      markerText(`Ir = ${b.ir}   Is = ${b.is}   It = ${b.it}`, 695, by + 24, 15, '#1e3a8a', 'center');
+
+      markerText(b.name, 880, by - 66, 18, '#18181b', 'center', true);
+      markerRect(760, by - 52, 460, 112);
+
+      if (b.subItm) {
+        markerLine(760, by, 815, by);
+        drawBreakerSymbol(835, by, b.subItm);
+        markerLine(890, by, 1020, by);
+      } else {
+        markerLine(760, by, 1020, by);
+      }
+
+      const finalLabel = b.subBoard || b.name;
+      markerRect(1020, by - 26, 180, 52, '#1e3a8a');
+      markerText(finalLabel, 1110, by, 17, '#1e3a8a', 'center', true);
+    });
+  }
+}
+
+function downloadDiagram() {
+  const site = (document.getElementById('siteName').value || 'SITE').trim().replace(/\s+/g, '_');
+  const link = document.createElement('a');
+  link.download = `Diagrama_Unifilar_${site}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+window.onload = () => {
+  renderBranchesUI();
+  document.fonts.ready.then(() => draw());
+};
+
