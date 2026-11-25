@@ -3,477 +3,757 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Suite Técnica Unificada • Torres Unidas</title>
+  <title>Suite Técnica Torres Unidas • Plataforma Unificada</title>
   <link href="https://googleapis.com" rel="stylesheet">
   <style>
-    :root { --primary: #0f4c81; --dark: #092e4e; --bg: #eef2f6; --card: #ffffff; --border: #cbd5e1; --text: #1e293b; }
+    :root {
+      --navy: #0b1f3a;
+      --navy-light: #15325b;
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --primary-soft: #eff6ff;
+      --success: #059669;
+      --success-hover: #047857;
+      --bg: #eef2f6;
+      --card: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --stage-bg: #dbe3ec;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
-    nav.topbar {
-      background: var(--dark); color: #fff; padding: 10px 18px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-      position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.22);
+    body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); }
+
+    header.topbar {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: #fff; padding: 14px 22px; box-shadow: 0 4px 14px rgba(11,31,58,0.22);
+      position: sticky; top: 0; z-index: 1000;
     }
-    .brand-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .brand { font-weight: 700; font-size: 1.05rem; }
-    .global-site-box {
-      display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.14);
-      padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.28);
+    .top-row {
+      max-width: 1650px; margin: 0 auto; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px;
     }
-    .global-site-box span { font-size: 0.74rem; font-weight: 700; color: #bae6fd; text-transform: uppercase; }
-    .global-site-box input {
-      width: 175px; padding: 5px 8px; border-radius: 5px; border: none;
-      font-weight: 700; font-size: 0.86rem; text-transform: uppercase; color: #0f172a;
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.15rem; }
+    .brand-badge { background: #38bdf8; color: var(--navy); font-size: 0.72rem; padding: 3px 9px; border-radius: 99px; font-weight: 800; }
+
+    .sync-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: rgba(255,255,255,0.1); padding: 7px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
     }
-    .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sync-bar label { color: #bae6fd; font-size: 0.72rem; font-weight: 700; margin: 0; text-transform: uppercase; }
+    .sync-bar input, .sync-bar select {
+      padding: 6px 10px; border-radius: 6px; border: none; font-weight: 700; font-size: 0.85rem; color: var(--navy); background: #fff;
+    }
+    .sync-bar input#globalSite { width: 175px; text-transform: uppercase; }
+    .sync-bar input#globalAlt { width: 82px; }
+
+    .tabs-nav {
+      max-width: 1650px; margin: 12px auto 0; display: grid;
+      grid-template-columns: repeat(6, 1fr); gap: 8px;
+    }
+    @media (max-width: 1100px) { .tabs-nav { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .tabs-nav { grid-template-columns: repeat(2, 1fr); } }
+
     .tab-btn {
-      padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
-      font-weight: 700; font-size: 0.88rem; cursor: pointer;
-      background: rgba(255,255,255,0.12); color: #fff;
+      padding: 11px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.08); color: #e2e8f0; font-weight: 700; font-size: 0.84rem;
+      cursor: pointer; transition: 0.15s; text-align: center;
     }
-    .tab-btn.active { background: #ffffff; color: var(--primary); border-color: #fff; }
-    .view-section { display: none; }
-    .view-section.active { display: block; }
-    .app-frame { width: 100%; height: calc(100vh - 64px); border: none; display: block; background: #fff; }
-    .tablero-wrap { padding: 16px; max-width: 1650px; margin: 0 auto; }
-    .subbar {
-      background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
-      margin-bottom: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    .tab-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .tab-btn.active { background: #ffffff; color: var(--navy); border-color: #ffffff; box-shadow: 0 3px 10px rgba(0,0,0,0.22); }
+    .main-wrap { max-width: 1650px; margin: 18px auto; padding: 0 18px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .toolbar-uniform {
+      background: var(--card); border: 1px solid var(--border); border-left: 5px solid var(--primary);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.04);
     }
-    .btn-big {
-      padding: 10px 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.86rem;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    .toolbar-title { font-weight: 800; font-size: 0.95rem; color: var(--navy); }
+    .toolbar-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .grid-2col { display: grid; grid-template-columns: 430px 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 1024px) { .grid-2col { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,0.04);
     }
-    .btn-tpl { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
-    .btn-dl { background: #16a34a; color: #fff; font-size: 0.92rem; }
-    .btn-blue { background: var(--primary); color: #fff; }
-    .btn-gray { background: #e2e8f0; color: #1e293b; }
-    .btn-red { background: #fee2e2; color: #b91c1c; padding: 3px 7px; font-size: 0.72rem; border-radius: 5px; border: none; cursor: pointer; }
-    .layout { display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
-    @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-    .scroll-box { max-height: calc(100vh - 155px); overflow-y: auto; }
-    h2 { margin: 0 0 8px 0; font-size: 0.84rem; color: var(--primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; }
-    .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 12px; }
-    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    label { display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 2px; }
-    input[type="text"], select { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
-    .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-    .chip { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; padding: 4px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
-    .branch { background: #fff; border: 1px solid #cbd5e1; border-left: 4px solid var(--primary); border-radius: 6px; padding: 9px; margin-bottom: 8px; }
-    .photo-viewer { margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #0f172a; text-align: center; display: none; }
-    .photo-viewer img { max-width: 100%; max-height: 210px; object-fit: contain; cursor: zoom-in; transition: 0.2s; }
-    .photo-viewer img.zoomed { transform: scale(1.8); cursor: zoom-out; }
-    .canvas-area { background: #cbd5e1; border-radius: 8px; padding: 12px; overflow: auto; display: flex; justify-content: center; }
-    canvas { background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.15); border-radius: 4px; max-width: 100%; height: auto; }
+    .scroll-panel { max-height: calc(100vh - 185px); overflow-y: auto; }
+    h2 {
+      margin: 0 0 12px 0; font-size: 0.85rem; color: var(--navy);
+      border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .section-box {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 12px; margin-bottom: 14px;
+    }
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+    label.field-lbl { display: block; font-size: 0.74rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+    input[type="text"], input[type="number"], select {
+      width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1;
+      border-radius: 7px; font-size: 0.84rem; background: #fff; color: var(--text);
+    }
+    input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(29,78,216,0.12); }
+
+    .btn {
+      padding: 10px 16px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.86rem;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-success { background: var(--success); color: #fff; font-size: 0.9rem; }
+    .btn-success:hover { background: var(--success-hover); }
+    .btn-soft { background: var(--primary-soft); color: var(--primary); border: 1px solid #bfdbfe; }
+    .btn-soft:hover { background: #dbeafe; }
+    .btn-danger { background: #fee2e2; color: #b91c1c; padding: 4px 8px; font-size: 0.74rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip {
+      background: var(--primary-soft); color: var(--primary); border: 1px solid #bfdbfe;
+      padding: 5px 9px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; cursor: pointer;
+    }
+    .branch-item {
+      background: #fff; border: 1px solid #cbd5e1; border-left: 4px solid var(--primary);
+      border-radius: 8px; padding: 10px; margin-bottom: 9px;
+    }
+    .canvas-stage {
+      background: var(--stage-bg); border-radius: 10px; padding: 14px; overflow: auto;
+      display: flex; justify-content: center; align-items: flex-start; min-height: 540px;
+    }
+    canvas { background: #fff; box-shadow: 0 6px 20px rgba(15,23,42,0.14); border-radius: 6px; max-width: 100%; height: auto; }
+    .photo-box { margin-top: 8px; background: var(--navy); border-radius: 8px; text-align: center; overflow: hidden; display: none; }
+    .photo-box img { max-width: 100%; max-height: 200px; cursor: zoom-in; transition: 0.2s; }
+    .photo-box img.zoomed { transform: scale(1.8); cursor: zoom-out; }
   </style>
 </head>
 <body>
-<nav class="topbar">
-  <div class="brand-group">
-    <div class="brand">🛠️ Suite Técnica • Torres Unidas</div>
-    <div class="global-site-box" title="Sincroniza este nombre en todas las pestañas">
-      <span>Sitio:</span>
-      <input type="text" id="globalSiteInput" value="CORA CORA" oninput="syncSiteName(this.value, 'global')" />
+<header class="topbar">
+  <div class="top-row">
+    <div class="brand">
+      <span>TORRES UNIDAS</span>
+      <span class="brand-badge">SUITE INGENIERÍA</span>
+    </div>
+    <div class="sync-bar">
+      <label>Sitio:</label>
+      <input type="text" id="globalSite" value="CORA CORA" oninput="syncAll()" />
+      <label>Torre:</label>
+      <select id="globalTorre" onchange="syncTorreModel(this.value)">
+        <option value="autosoportada_normal">Autosoportada</option>
+        <option value="arbol">Tipo Árbol</option>
+        <option value="monopolo">Monopolo</option>
+        <option value="ventada_piso">Ventada</option>
+        <option value="arriostrada_escalera_gato">Arriostrada</option>
+      </select>
+      <label>Altura (m):</label>
+      <input type="number" id="globalAlt" value="30.00" step="0.5" oninput="syncAll()" />
     </div>
   </div>
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="openModule('mod-esquemas', this)">🏗️ 1-4. Esquemas Técnicos</button>
-    <button class="tab-btn" onclick="openModule('mod-tableros', this)">⚡ 5. Diagrama de Tableros</button>
-    <button class="tab-btn" onclick="openModule('mod-pano', this)">🌐 6. Fotos Panorámicas & 360°</button>
-  </div>
-</nav>
 
-<section id="mod-esquemas" class="view-section active">
-  <iframe id="frameEsquemas" class="app-frame" src="https://github.io" title="Esquemas Técnicos"></iframe>
-</section>
+  <nav class="tabs-nav">
+    <button class="tab-btn active" onclick="openTab('p1', this)">1. F12M - SPAT</button>
+    <button class="tab-btn" onclick="openTab('p2', this)">2. Perímetro y Coords</button>
+    <button class="tab-btn" onclick="openTab('p3', this)">3. Elevación Torre</button>
+    <button class="tab-btn" onclick="openTab('p4', this)">4. Equipos en Torre</button>
+    <button class="tab-btn" onclick="openTab('p5', this)">5. Tableros (Plumón)</button>
+    <button class="tab-btn" onclick="openTab('p6', this)">6. Panorámica & 360°</button>
+  </nav>
+</header>
 
-<section id="mod-tableros" class="view-section">
-  <div class="tablero-wrap">
-    <div class="subbar">
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="btn-big btn-tpl" onclick="applyPreset('MED_OP')">📋 Medidor → Tab. Operador Indep.</button>
-        <button class="btn-big btn-tpl" onclick="applyPreset('CAJA_PASE')">📦 Tab. Principal (Caja de Pase)</button>
-        <button class="btn-big btn-tpl" onclick="applyPreset('POSTE_TRAFO')">⚡ Poste Transformador (Sin Medidor)</button>
-        <button class="btn-big btn-tpl" onclick="applyPreset('2OP')">🏢 Estándar 2 Operadores</button>
+<main class="main-wrap">
+  <!-- PESTAÑA 1: SPAT -->
+  <section id="p1" class="tab-panel active">
+    <div class="toolbar-uniform">
+      <span class="toolbar-title">1. Sistema de Puesta a Tierra (F12M - SPAT)</span>
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="drawSpat()">🔄 Actualizar Vista</button>
+        <button class="btn btn-success" onclick="dlCanvas('cSpat', '1_ESQUEMA_SPAT')">⬇ DESCARGAR PNG</button>
       </div>
-      <button class="btn-big btn-dl" onclick="downloadPNG()">⬇ DESCARGAR PNG</button>
     </div>
-
-    <div class="layout">
-      <div class="card scroll-box">
-        <h2>1. Visor Rápido de Foto (Tablero / Medidor)</h2>
-        <div class="box">
-          <input type="file" id="photoInput" accept="image/*" multiple style="font-size:0.78rem; width:100%;" />
-          <div id="photoTabs" class="chips"></div>
-          <div class="photo-viewer" id="photoViewer">
-            <img id="previewImg" title="Clic para Zoom" onclick="this.classList.toggle('zoomed')" />
+    <div class="grid-2col">
+      <div class="card scroll-panel">
+        <h2>Parámetros SPAT</h2>
+        <div class="section-box">
+          <div class="g2">
+            <div><label class="field-lbl">Cantidad de Pozos</label>
+              <select id="spatPozos" onchange="drawSpat()">
+                <option value="1">1 Pozo (PT01)</option>
+                <option value="2">2 Pozos (PT01-PT02)</option>
+                <option value="3" selected>3 Pozos (PT01-PT03)</option>
+                <option value="4">4 Pozos (PT01-PT04)</option>
+                <option value="5">5 Pozos (PT01-PT05)</option>
+                <option value="6">6 Pozos (PT01-PT06)</option>
+              </select>
+            </div>
+            <div><label class="field-lbl">Símbolo Torre</label>
+              <select id="spatSimbolo" onchange="drawSpat()">
+                <option value="auto_cuadrado">Autosoportada (Cuadrada)</option>
+                <option value="auto_triangulo">Autosoportada (Triangular)</option>
+                <option value="monopolo">Monopolo / Árbol</option>
+                <option value="ventada">Ventada</option>
+                <option value="arriostrada">Arriostrada</option>
+              </select>
+            </div>
           </div>
-          <div class="chips">
-            <button class="chip" onclick="quickAddItm('3x125A')">+ 3x125A</button>
-            <button class="chip" onclick="quickAddItm('3x100A')">+ 3x100A</button>
-            <button class="chip" onclick="quickAddItm('3x63A')">+ 3x63A</button>
-            <button class="chip" onclick="quickAddItm('2x63A')">+ 2x63A</button>
-            <button class="chip" onclick="quickAddItm('2x50A')">+ 2x50A</button>
-            <button class="chip" onclick="quickAddItm('2x40A')">+ 2x40A</button>
-            <button class="chip" onclick="quickAddItm('2x32A')">+ 2x32A</button>
+          <div class="g3" style="margin-top:10px;">
+            <div><label class="field-lbl">50% - 15m (Ω)</label><input type="number" id="r50" value="2.15" step="0.01" oninput="drawSpat()"></div>
+            <div><label class="field-lbl">60% - 18m (Ω)</label><input type="number" id="r60" value="2.20" step="0.01" oninput="drawSpat()"></div>
+            <div><label class="field-lbl">70% - 21m (Ω)</label><input type="number" id="r70" value="2.28" step="0.01" oninput="drawSpat()"></div>
           </div>
         </div>
-        <h2>2. Fuente / Acometida y Medidor</h2>
-        <div class="box">
+      </div>
+      <div class="card">
+        <div class="canvas-stage"><canvas id="cSpat" width="960" height="980"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 2: PERÍMETRO -->
+  <section id="p2" class="tab-panel">
+    <div class="toolbar-uniform">
+      <span class="toolbar-title">2. Perímetro y Coordenadas de Vértices</span>
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="drawPer()">🔄 Actualizar Vista</button>
+        <button class="btn btn-success" onclick="dlCanvas('cPer', '2_ESQUEMA_PERIMETRO')">⬇ DESCARGAR PNG</button>
+      </div>
+    </div>
+    <div class="grid-2col">
+      <div class="card scroll-panel">
+        <h2>Dimensiones y Coordenadas</h2>
+        <div class="section-box">
           <div class="g2">
-            <div><label>Nombre del Site (Sincronizado)</label><input type="text" id="siteName" value="CORA CORA" oninput="syncSiteName(this.value, 'tablero')"></div>
-            <div><label>Propietario / Operador</label><input type="text" id="owner" value="TU" oninput="draw()"></div>
+            <div><label class="field-lbl">Ancho Horizontal (m)</label><input type="number" id="perW" value="8.10" step="0.1" oninput="drawPer()"></div>
+            <div><label class="field-lbl">Largo Vertical (m)</label><input type="number" id="perH" value="10.00" step="0.1" oninput="drawPer()"></div>
           </div>
-          <div style="margin-top:6px;">
-            <label>Tipo de Alimentación Inicial</label>
-            <select id="sourceType" onchange="draw()">
-              <option value="MEDIDOR">Con Medidor Existente</option>
-              <option value="DIRECTA">Medidor no ubicado, conexión directa</option>
-              <option value="POSTE_TRAFO">Poste Transformador (Sin Medidor)</option>
-            </select>
+          <div style="margin-top:8px;"><label class="field-lbl">Coordenada A (Sup. Izq.)</label><input type="text" id="cA" value="11°51'52.24&quot;S 77°04'35.55&quot;W" oninput="drawPer()"></div>
+          <div style="margin-top:6px;"><label class="field-lbl">Coordenada B (Sup. Der.)</label><input type="text" id="cB" value="11°51'52.24&quot;S 77°04'35.29&quot;W" oninput="drawPer()"></div>
+          <div style="margin-top:6px;"><label class="field-lbl">Coordenada C (Inf. Der.)</label><input type="text" id="cC" value="11°51'52.55&quot;S 77°04'35.28&quot;W" oninput="drawPer()"></div>
+          <div style="margin-top:6px;"><label class="field-lbl">Coordenada D (Inf. Izq.)</label><input type="text" id="cD" value="11°51'52.56&quot;S 77°04'35.55&quot;W" oninput="drawPer()"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="canvas-stage"><canvas id="cPer" width="960" height="740"></canvas></div>
+      </div>
+    </div>
+  </section>
+  <!-- PESTAÑA 3: ELEVACIÓN TORRE -->
+  <section id="p3" class="tab-panel">
+    <div class="toolbar-uniform">
+      <span class="toolbar-title">3. Elevación de Estructura y Cotas</span>
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="drawTorre()">🔄 Actualizar Vista</button>
+        <button class="btn btn-success" onclick="dlCanvas('cTorre', '3_ESQUEMA_TORRE')">⬇ DESCARGAR PNG</button>
+      </div>
+    </div>
+    <div class="grid-2col">
+      <div class="card scroll-panel">
+        <h2>Cotas de Estructura</h2>
+        <div class="section-box">
+          <div class="g2">
+            <div><label class="field-lbl">Base / Pedestal (m)</label><input type="number" id="tBase" value="1.20" step="0.1" oninput="drawTorre()"></div>
+            <div><label class="field-lbl">Roldana Sup. (m)</label><input type="number" id="tRolSup" value="28.50" step="0.1" oninput="drawTorre()"></div>
           </div>
-          <div class="g2" style="margin-top:6px;">
-            <div><label>N° Suministro</label><input type="text" id="serial" value="18211798" oninput="draw()"></div>
-            <div><label>Lectura (kWh)</label><input type="text" id="kwh" value="5321.6 KwH" oninput="draw()"></div>
+          <div class="g2" style="margin-top:8px;">
+            <div><label class="field-lbl">Roldana Inf. (m)</label><input type="number" id="tRolInf" value="27.30" step="0.1" oninput="drawTorre()"></div>
+            <div><label class="field-lbl">Imagen Torre (Opcional)</label><input type="file" id="torreImgFile" accept="image/*" style="font-size:0.75rem;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="canvas-stage"><canvas id="cTorre" width="900" height="820"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 4: EQUIPOS EN TORRE -->
+  <section id="p4" class="tab-panel">
+    <div class="toolbar-uniform">
+      <span class="toolbar-title">4. Equipos en Torre (RF / RRU / MW)</span>
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="drawEquipos()">🔄 Actualizar Vista</button>
+        <button class="btn btn-success" onclick="dlCanvas('cEquipos', '4_EQUIPOS_TORRE')">⬇ DESCARGAR PNG</button>
+      </div>
+    </div>
+    <div class="grid-2col">
+      <div class="card scroll-panel">
+        <h2>1. Foto Panorámica de Torre</h2>
+        <div class="section-box">
+          <input type="file" id="eqFotoInput" accept="image/*" style="font-size:0.78rem; width:100%;">
+        </div>
+        <h2>2. Inventario de Equipos</h2>
+        <div id="eqListUI"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="addEquipo()">+ Agregar Equipo</button>
+      </div>
+      <div class="card">
+        <div class="canvas-stage"><canvas id="cEquipos" width="960" height="720"></canvas></div>
+      </div>
+    </div>
+  </section>
+  <!-- PESTAÑA 5: TABLEROS (PLUMÓN) -->
+  <section id="p5" class="tab-panel">
+    <div class="toolbar-uniform">
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="applyTabPreset('MED_OP')">📋 Medidor → Tab. Operador Indep.</button>
+        <button class="btn btn-soft" onclick="applyTabPreset('CAJA_PASE')">📦 Tab. Principal (Caja de Pase)</button>
+        <button class="btn btn-soft" onclick="applyTabPreset('POSTE_TRAFO')">⚡ Poste Transformador (Sin Medidor)</button>
+        <button class="btn btn-soft" onclick="applyTabPreset('2OP')">🏢 Estándar 2 Operadores</button>
+      </div>
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="drawTab()">🔄 Redibujar</button>
+        <button class="btn btn-success" onclick="dlCanvas('cTab', '5_DIAGRAMA_TABLERO')">⬇ DESCARGAR PNG</button>
+      </div>
+    </div>
+    <div class="grid-2col">
+      <div class="card scroll-panel">
+        <h2>1. Visor de Foto (Tablero / Medidor)</h2>
+        <div class="section-box">
+          <input type="file" id="tabPhotoIn" accept="image/*" multiple style="font-size:0.78rem; width:100%;" />
+          <div id="tabPhotoTabs" class="chips"></div>
+          <div class="photo-box" id="tabPhotoBox">
+            <img id="tabPreviewImg" title="Clic para Zoom" onclick="this.classList.toggle('zoomed')" />
+          </div>
+          <div class="chips">
+            <button class="chip" onclick="quickItm('3x125A')">+ 3x125A</button>
+            <button class="chip" onclick="quickItm('3x100A')">+ 3x100A</button>
+            <button class="chip" onclick="quickItm('3x63A')">+ 3x63A</button>
+            <button class="chip" onclick="quickItm('2x63A')">+ 2x63A</button>
+            <button class="chip" onclick="quickItm('2x50A')">+ 2x50A</button>
+            <button class="chip" onclick="quickItm('2x40A')">+ 2x40A</button>
+          </div>
+        </div>
+
+        <h2>2. Alimentación y Medidor</h2>
+        <div class="section-box">
+          <div class="g2">
+            <div><label class="field-lbl">Tipo Alimentación</label>
+              <select id="tabSource" onchange="drawTab()">
+                <option value="MEDIDOR">Con Medidor Existente</option>
+                <option value="DIRECTA">Sin Medidor (Conexión Directa)</option>
+                <option value="POSTE_TRAFO">Poste Transformador (Sin Medidor)</option>
+              </select>
+            </div>
+            <div><label class="field-lbl">Propietario</label><input type="text" id="tabOwner" value="TU" oninput="drawTab()"></div>
+          </div>
+          <div class="g2" style="margin-top:8px;">
+            <div><label class="field-lbl">N° Suministro</label><input type="text" id="tabSerial" value="18211798" oninput="drawTab()"></div>
+            <div><label class="field-lbl">Lectura kWh</label><input type="text" id="tabKwh" value="5321.6 KwH" oninput="drawTab()"></div>
           </div>
         </div>
 
         <h2>3. Tablero Principal / Caja de Pase</h2>
-        <div class="box">
+        <div class="section-box">
           <div class="g2">
-            <div><label>Tablero Principal</label><input type="text" id="mainBoard" value="Tablero PRINCIPAL TU" oninput="draw()"></div>
-            <div><label>Acometida</label>
-              <select id="phases" onchange="draw()">
-                <option value="3F">Trifásico (3F)</option>
-                <option value="3F+N">Trifásico + Neutro (3F+N)</option>
-                <option value="1F">Monofásico (2 Fases)</option>
-              </select>
-            </div>
+            <div><label class="field-lbl">Nombre Tablero</label><input type="text" id="tabMain" value="Tablero PRINCIPAL TU" oninput="drawTab()"></div>
+            <div><label class="field-lbl">ITM General</label><input type="text" id="tabItm" value="3x100A" oninput="drawTab()"></div>
           </div>
-          <label style="display:flex; align-items:center; gap:6px; margin:7px 0; cursor:pointer; font-weight:700; color:#0f4c81;">
-            <input type="checkbox" id="isPassBox" onchange="draw()"> Usar como CAJA DE PASE
+          <label style="display:flex; align-items:center; gap:6px; margin:8px 0; font-size:0.8rem; font-weight:700; color:var(--primary); cursor:pointer;">
+            <input type="checkbox" id="tabPassBox" onchange="drawTab()"> Usar como CAJA DE PASE (paso directo)
           </label>
-          <div class="g2">
-            <div><label>ITM General</label><input type="text" id="mainItm" value="3x100A" oninput="draw()"></div>
-            <div><label>Nota Puenteo</label><input type="text" id="bridge" placeholder="Ej. Puenteado S con T" oninput="draw()"></div>
-          </div>
-          <label style="margin-top:6px;">Voltajes (Vrs / Vst / Vrt)</label>
           <div class="g3">
-            <input type="text" id="vrs" value="218V" oninput="draw()">
-            <input type="text" id="vst" value="216V" oninput="draw()">
-            <input type="text" id="vrt" value="219V" oninput="draw()">
+            <div><label class="field-lbl">Vrs</label><input type="text" id="vrs" value="218V" oninput="drawTab()"></div>
+            <div><label class="field-lbl">Vst</label><input type="text" id="vst" value="216V" oninput="drawTab()"></div>
+            <div><label class="field-lbl">Vrt</label><input type="text" id="vrt" value="219V" oninput="drawTab()"></div>
           </div>
-          <label style="margin-top:6px;">Corrientes (Ir / Is / It)</label>
-          <div class="g3">
-            <input type="text" id="ir" value="19.25A" oninput="draw()">
-            <input type="text" id="is" value="18.79A" oninput="draw()">
-            <input type="text" id="it" value="0.0A" oninput="draw()">
+          <div class="g3" style="margin-top:6px;">
+            <div><label class="field-lbl">Ir</label><input type="text" id="ir" value="19.25A" oninput="drawTab()"></div>
+            <div><label class="field-lbl">Is</label><input type="text" id="is" value="18.79A" oninput="drawTab()"></div>
+            <div><label class="field-lbl">It</label><input type="text" id="it" value="0.0A" oninput="drawTab()"></div>
           </div>
         </div>
 
-        <h2>4. Tableros Operadores / Derivaciones</h2>
-        <div id="branchList"></div>
-        <button class="btn-big btn-blue" style="width:100%; justify-content:center;" onclick="addBranch()">+ Agregar Derivación Manual</button>
+        <h2>4. Derivaciones / Operadores</h2>
+        <div id="tabBranchesUI"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="addTabBranch()">+ Agregar Derivación</button>
       </div>
-
       <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <div style="display:flex; gap:12px;">
-            <label style="display:flex; align-items:center; gap:5px; margin:0;"><input type="checkbox" id="gridBg" checked onchange="draw()"> Hoja cuadriculada</label>
-            <label style="display:flex; align-items:center; gap:5px; margin:0;"><input type="checkbox" id="handStyle" checked onchange="draw()"> Pulso a mano</label>
-          </div>
-          <button class="btn-big btn-gray" onclick="draw()">🔄 Redibujar</button>
-        </div>
-        <div class="canvas-area">
-          <canvas id="canvas" width="1280" height="700"></canvas>
-        </div>
+        <div class="canvas-stage"><canvas id="cTab" width="1260" height="680"></canvas></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="mod-pano" class="view-section">
-  <iframe id="framePano" class="app-frame" src="https://github.io" title="Fotos Panorámicas y 360°"></iframe>
-</section>
+  <!-- PESTAÑA 6: PANORÁMICA Y VISOR 360° -->
+  <section id="p6" class="tab-panel">
+    <div class="toolbar-uniform">
+      <span class="toolbar-title">6. Generador Panorámico & Visor Interactivo 360°</span>
+      <div class="toolbar-group">
+        <button class="btn btn-soft" onclick="buildPano()">⚡ Unir Fotos 360°</button>
+        <button class="btn btn-success" onclick="dlPano()">⬇ DESCARGAR JPG 360°</button>
+      </div>
+    </div>
+    <div class="grid-2col">
+      <div class="card scroll-panel">
+        <h2>1. Cargar Fotos Secuenciales</h2>
+        <div class="section-box">
+          <input type="file" id="panoFiles" accept="image/*" multiple style="font-size:0.8rem; width:100%;">
+          <div class="g2" style="margin-top:10px;">
+            <div><label class="field-lbl">Solapamiento (%)</label><input type="number" id="panoOv" value="15" min="0" max="50"></div>
+            <div><label class="field-lbl">Calidad JPG (%)</label><input type="number" id="panoQual" value="92" min="20" max="100"></div>
+          </div>
+        </div>
+        <h2>2. Vista Plana 2D</h2>
+        <div class="section-box"><canvas id="cPano2D" width="400" height="190" style="width:100%;"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="canvas-stage"><canvas id="c360" width="920" height="540" style="cursor:grab; background:#0b1f3a;"></canvas></div>
+      </div>
+    </div>
+  </section>
+</main>
 <script>
-const GLOBAL_SITE_KEY = "torres_unidas_site_global_v1";
-
-function syncSiteName(rawVal, source) {
-  const cleanName = (rawVal || "").toUpperCase();
-  const globalInp = document.getElementById("globalSiteInput");
-  const tabInp = document.getElementById("siteName");
-
-  if (globalInp && source !== "global") globalInp.value = cleanName;
-  if (tabInp && source !== "tablero") tabInp.value = cleanName;
-
-  try { localStorage.setItem(GLOBAL_SITE_KEY, cleanName); } catch (_) {}
-
-  // Sincronizar con el interior de los iframes (ESQUEMAS y PANORAMICA)
-  ["frameEsquemas", "framePano"].forEach((frameId) => {
-    const iframe = document.getElementById(frameId);
-    if (!iframe) return;
-    try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      const innerSitio = doc.getElementById("sitio") || doc.getElementById("siteName");
-      if (innerSitio && innerSitio.value !== cleanName) {
-        innerSitio.value = cleanName;
-        innerSitio.dispatchEvent(new Event("input", { bubbles: true }));
-        innerSitio.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-    } catch (_) {
-      iframe.contentWindow?.postMessage({ type: "SYNC_SITE_NAME", site: cleanName }, "*");
-    }
-  });
-
-  draw();
-}
-
-// Al cargar cada iframe, enviarle el nombre actual del sitio automáticamente
-document.getElementById("frameEsquemas").addEventListener("load", () => {
-  syncSiteName(document.getElementById("globalSiteInput").value, "global");
-  // Detectar si el usuario escribe el nombre dentro de ESQUEMAS para reflejarlo arriba
-  try {
-    const doc = document.getElementById("frameEsquemas").contentDocument;
-    const innerSitio = doc.getElementById("sitio");
-    if (innerSitio) {
-      innerSitio.addEventListener("input", () => syncSiteName(innerSitio.value, "iframe"));
-    }
-  } catch (_) {}
-});
-
-document.getElementById("framePano").addEventListener("load", () => {
-  syncSiteName(document.getElementById("globalSiteInput").value, "global");
-});
-
-function openModule(id, btn) {
-  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+function openTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  syncSiteName(document.getElementById("globalSiteInput").value, "global");
+  syncAll();
 }
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let photos = [];
-let branches = [
-  { name: 'Tablero CLARO', itm: '3x50A', eq: 'EQUIPOS CLARO', eqItm: '2x40A', ir: '12.1A', is: '15.0A', it: '11.8A' },
-  { name: 'Tablero ENTEL', itm: '3x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A', ir: '24.1A', is: '23.1A', it: '20.2A' }
-];
+function getSite() { return (document.getElementById('globalSite').value || 'SITIO').trim().toUpperCase(); }
+function getAlt() { return parseFloat(document.getElementById('globalAlt').value) || 30.0; }
 
-document.getElementById('photoInput').addEventListener('change', (e) => {
-  const files = Array.from(e.target.files);
-  if (!files.length) return;
-  photos = [];
-  const tabs = document.getElementById('photoTabs'); tabs.innerHTML = '';
+function syncTorreModel(val) {
+  const map = { autosoportada_normal: 'auto_cuadrado', arbol: 'monopolo', monopolo: 'monopolo', ventada_piso: 'ventada', arriostrada_escalera_gato: 'arriostrada' };
+  document.getElementById('spatSimbolo').value = map[val] || 'auto_cuadrado';
+  syncAll();
+}
+
+function syncAll() { drawSpat(); drawPer(); drawTorre(); drawEquipos(); drawTab(); }
+
+function dlCanvas(id, prefix) {
+  const a = document.createElement('a');
+  a.download = `${prefix}_${getSite().replace(/\s+/g, '_')}.png`;
+  a.href = document.getElementById(id).toDataURL('image/png');
+  a.click();
+}
+
+function drawTowerSymbol(ctx, tipo, cx, cy, s = 1) {
+  ctx.save(); ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3.5;
+  if (tipo === 'auto_cuadrado') ctx.strokeRect(cx - 70 * s, cy - 70 * s, 140 * s, 140 * s);
+  else if (tipo === 'auto_triangulo') {
+    ctx.beginPath(); ctx.moveTo(cx, cy - 80 * s); ctx.lineTo(cx - 72 * s, cy + 60 * s); ctx.lineTo(cx + 72 * s, cy + 60 * s); ctx.closePath(); ctx.stroke();
+  } else if (tipo === 'monopolo') { ctx.beginPath(); ctx.arc(cx, cy, 62 * s, 0, Math.PI * 2); ctx.stroke(); }
+  else if (tipo === 'ventada') ctx.strokeRect(cx - 45 * s, cy - 45 * s, 90 * s, 90 * s);
+  else { ctx.beginPath(); ctx.arc(cx, cy, 42 * s, 0, Math.PI * 2); ctx.stroke(); }
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('TORRE', cx, cy + 5); ctx.restore();
+}
+
+function drawSpat() {
+  const c = document.getElementById('cSpat'), ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 5; ctx.strokeRect(65, 55, 380, 400);
+  ctx.fillStyle = '#dc2626'; ctx.font = 'bold 30px Arial'; ctx.textAlign = 'center'; ctx.fillText(getSite(), 255, 95);
+  drawTowerSymbol(ctx, document.getElementById('spatSimbolo').value, 255, 275, 1);
+
+  const n = parseInt(document.getElementById('spatPozos').value) || 3;
+  const pts = [{x:340,y:380},{x:340,y:180},{x:255,y:155},{x:160,y:180},{x:160,y:380},{x:250,y:405}];
+  if (n > 1) {
+    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 4; ctx.beginPath();
+    for (let i = 0; i < n; i++) i === 0 ? ctx.moveTo(pts[i].x, pts[i].y) : ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+  }
+  for (let i = 0; i < n; i++) {
+    ctx.fillStyle = '#fff'; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.5;
+    ctx.fillRect(pts[i].x - 14, pts[i].y - 18, 28, 36); ctx.strokeRect(pts[i].x - 14, pts[i].y - 18, 28, 36);
+    ctx.fillStyle = '#0f172a'; ctx.font = 'bold 14px Arial'; ctx.fillText(`PT0${i + 1}`, pts[i].x, pts[i].y - 24);
+  }
+  ctx.strokeStyle = '#059669'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(340, 398); ctx.lineTo(340, 515); ctx.lineTo(445, 560); ctx.stroke();
+  ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3; ctx.strokeRect(435, 545, 30, 75);
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left'; ctx.fillText('TELURÓMETRO', 475, 575);
+
+  ctx.strokeStyle = '#1d4ed8'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(443, 620); ctx.lineTo(595, 825); ctx.stroke();
+  ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(457, 620); ctx.lineTo(720, 935); ctx.stroke();
+
+  const vals = [
+    { t: '50%-15MTS=', v: `${parseFloat(document.getElementById('r50').value || 0).toFixed(2)} OHMS`, x: 565, y: 650 },
+    { t: '60%-18MTS=', v: `${parseFloat(document.getElementById('r60').value || 0).toFixed(2)} OHMS`, x: 645, y: 760 },
+    { t: '70%-21MTS=', v: `${parseFloat(document.getElementById('r70').value || 0).toFixed(2)} OHMS`, x: 725, y: 870 }
+  ];
+  vals.forEach(item => {
+    ctx.fillStyle = '#0f172a'; ctx.font = 'bold 22px Arial'; ctx.fillText(item.t, item.x, item.y);
+    ctx.fillStyle = '#dc2626'; ctx.font = 'bold 42px Arial'; ctx.fillText(item.v, item.x, item.y + 42);
+  });
+}
+
+function drawPer() {
+  const c = document.getElementById('cPer'), ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  const wM = parseFloat(document.getElementById('perW').value) || 8.1;
+  const hM = parseFloat(document.getElementById('perH').value) || 10.0;
+  const rW = 540, rH = 460, rx = (c.width - rW) / 2, ry = 140;
+  ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 4; ctx.strokeRect(rx, ry, rW, rH);
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 17px Arial'; ctx.textAlign = 'center';
+  ctx.fillText(`${wM.toFixed(2)} MTS`, rx + rW / 2, ry - 20); ctx.fillText(`${wM.toFixed(2)} MTS`, rx + rW / 2, ry + rH + 28);
+  ctx.fillText(`${hM.toFixed(2)} MTS`, rx - 55, ry + rH / 2); ctx.fillText(`${hM.toFixed(2)} MTS`, rx + rW + 55, ry + rH / 2);
+  ctx.fillStyle = '#dc2626'; ctx.font = 'bold 28px Arial'; ctx.fillText(getSite(), rx + rW / 2, ry + rH / 2 - 75);
+  drawTowerSymbol(ctx, document.getElementById('spatSimbolo').value, rx + rW / 2, ry + rH / 2 + 15, 0.75);
+
+  const coords = [
+    { lbl: 'COORDENADA A:', val: document.getElementById('cA').value, x: rx + 135, y: ry + 85, ang: -Math.PI / 4 },
+    { lbl: 'COORDENADA B:', val: document.getElementById('cB').value, x: rx + rW - 135, y: ry + 85, ang: Math.PI / 4 },
+    { lbl: 'COORDENADA C:', val: document.getElementById('cC').value, x: rx + rW - 135, y: ry + rH - 85, ang: -Math.PI / 4 },
+    { lbl: 'COORDENADA D:', val: document.getElementById('cD').value, x: rx + 135, y: ry + rH - 85, ang: Math.PI / 4 }
+  ];
+  coords.forEach(pt => {
+    ctx.save(); ctx.translate(pt.x, pt.y); ctx.rotate(pt.ang);
+    ctx.fillStyle = '#0f172a'; ctx.font = 'bold 14px Arial'; ctx.fillText(pt.lbl, 0, -10); ctx.fillText(pt.val, 0, 10);
+    ctx.restore();
+  });
+}
+
+let customTorreImg = null;
+document.getElementById('torreImgFile').addEventListener('change', (e) => {
+  if (!e.target.files) return;
+  const img = new Image(); img.onload = () => { customTorreImg = img; drawTorre(); };
+  img.src = URL.createObjectURL(e.target.files);
+});
+
+function drawTorre() {
+  const c = document.getElementById('cTorre'), ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  if (customTorreImg) {
+    const s = Math.min((c.width - 40) / customTorreImg.width, (c.height - 40) / customTorreImg.height);
+    ctx.drawImage(customTorreImg, (c.width - customTorreImg.width * s) / 2, 20, customTorreImg.width * s, customTorreImg.height * s);
+  } else {
+    ctx.strokeStyle = '#0b1f3a'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(390, 740); ctx.lineTo(435, 110); ctx.lineTo(465, 110); ctx.lineTo(510, 740); ctx.stroke();
+    for (let y = 150; y < 740; y += 65) {
+      const w = 15 + ((y - 110) / 630) * 45;
+      ctx.beginPath(); ctx.moveTo(450 - w, y); ctx.lineTo(450 + w, y); ctx.stroke();
+    }
+    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(365, 740, 170, 35); ctx.strokeRect(365, 740, 170, 35);
+  }
+  ctx.fillStyle = '#dc2626'; ctx.font = 'bold 28px Arial'; ctx.textAlign = 'center'; ctx.fillText(getSite(), 220, 110);
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'left';
+  ctx.fillText(`Altura Total: ${getAlt().toFixed(2)} m`, 570, 420);
+  ctx.fillText(`Roldana Sup: ${parseFloat(document.getElementById('tRolSup').value || 0).toFixed(2)} m`, 570, 210);
+  ctx.fillText(`Roldana Inf: ${parseFloat(document.getElementById('tRolInf').value || 0).toFixed(2)} m`, 570, 250);
+  ctx.fillText(`Base/Pedestal: ${parseFloat(document.getElementById('tBase').value || 0).toFixed(2)} m`, 570, 755);
+}
+
+let eqImg = null, equipos = [
+  { name: 'MW 1', h: 29.5, lx: 0.25, ly: 0.16, tx: 0.48, ty: 0.16 },
+  { name: 'RF 1-2-3', h: 28.5, lx: 0.75, ly: 0.22, tx: 0.52, ty: 0.22 },
+  { name: 'RRU 1-2-3', h: 27.5, lx: 0.25, ly: 0.30, tx: 0.48, ty: 0.30 }
+];
+document.getElementById('eqFotoInput').addEventListener('change', (e) => {
+  if (!e.target.files) return;
+  const img = new Image(); img.onload = () => { eqImg = img; drawEquipos(); };
+  img.src = URL.createObjectURL(e.target.files);
+});
+function renderEqUI() {
+  const box = document.getElementById('eqListUI'); box.innerHTML = '';
+  equipos.forEach((eq, i) => {
+    const d = document.createElement('div'); d.className = 'branch-item';
+    d.innerHTML = `<div class="g2">
+      <input type="text" value="${eq.name}" oninput="equipos[${i}].name=this.value; drawEquipos();">
+      <div style="display:flex; gap:5px;"><input type="number" value="${eq.h}" step="0.1" oninput="equipos[${i}].h=parseFloat(this.value)||0; drawEquipos();">
+      <button class="btn-danger" onclick="equipos.splice(${i},1); renderEqUI(); drawEquipos();">X</button></div>
+    </div>`;
+    box.appendChild(d);
+  });
+}
+function addEquipo() { equipos.push({ name: 'RF NUEVO', h: 25.0, lx: 0.75, ly: 0.40, tx: 0.52, ty: 0.40 }); renderEqUI(); drawEquipos(); }
+function drawEquipos() {
+  const c = document.getElementById('cEquipos'), ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  if (eqImg) ctx.drawImage(eqImg, 0, 0, c.width, c.height);
+  else { ctx.fillStyle = '#475569'; ctx.font = 'bold 18px Plus Jakarta Sans, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('Sube una foto panorámica de la torre para posicionar los equipos', c.width / 2, c.height / 2); }
+  equipos.forEach(eq => {
+    const lx = eq.lx * c.width, ly = eq.ly * c.height, tx = eq.tx * c.width, ty = eq.ty * c.height;
+    ctx.strokeStyle = '#ef1d1d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(tx, ty); ctx.stroke();
+    ctx.fillStyle = '#ef1d1d'; ctx.beginPath(); ctx.arc(tx, ty, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.font = 'bold 20px Arial'; ctx.textAlign = lx < tx ? 'right' : 'left';
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.strokeText(`${eq.name} (${eq.h}m)`, lx + (lx < tx ? -8 : 8), ly);
+    ctx.fillText(`${eq.name} (${eq.h}m)`, lx + (lx < tx ? -8 : 8), ly);
+  });
+}
+
+// --- PESTAÑA 5: TABLEROS (PLUMÓN) ---
+let tabPhotos = [], tabBranches = [
+  { name: 'Tablero CLARO', itm: '3x50A', eq: 'EQUIPOS CLARO', eqItm: '2x40A' },
+  { name: 'Tablero ENTEL', itm: '3x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A' }
+];
+document.getElementById('tabPhotoIn').addEventListener('change', (e) => {
+  const files = Array.from(e.target.files); if (!files.length) return;
+  tabPhotos = []; const tabs = document.getElementById('tabPhotoTabs'); tabs.innerHTML = '';
   files.forEach((f, idx) => {
     const r = new FileReader();
     r.onload = (ev) => {
-      photos.push(ev.target.result);
-      const btn = document.createElement('button');
-      btn.className = 'chip'; btn.textContent = `Foto ${idx + 1}`;
-      btn.onclick = () => {
-        const img = document.getElementById('previewImg');
-        img.src = photos[idx]; img.classList.remove('zoomed');
-        document.getElementById('photoViewer').style.display = 'block';
-      };
-      tabs.appendChild(btn);
-      if (idx === 0) btn.click();
+      tabPhotos.push(ev.target.result);
+      const b = document.createElement('button'); b.className = 'chip'; b.textContent = `Foto ${idx + 1}`;
+      b.onclick = () => { const im = document.getElementById('tabPreviewImg'); im.src = tabPhotos[idx]; im.classList.remove('zoomed'); document.getElementById('tabPhotoBox').style.display = 'block'; };
+      tabs.appendChild(b); if (idx === 0) b.click();
     };
     r.readAsDataURL(f);
   });
 });
-
-function quickAddItm(calibre) {
-  branches.push({ name: 'TABLERO OPERADOR', itm: calibre, eq: 'EQUIPOS', eqItm: '2x40A', ir: '10.0A', is: '10.2A', it: '0.0A' });
-  renderBranches(); draw();
-}
-
-function applyPreset(type) {
-  if (type === 'MED_OP') {
-    document.getElementById('sourceType').value = 'MEDIDOR'; document.getElementById('owner').value = 'ENTEL';
-    document.getElementById('isPassBox').checked = false; document.getElementById('mainBoard').value = 'Tablero OPERADOR ENTEL (Indep.)';
-    document.getElementById('mainItm').value = '3x63A'; document.getElementById('phases').value = '3F';
-    branches = [{ name: 'EQUIPOS ENTEL', itm: '2x40A', eq: 'RECTIFICADOR / AA', eqItm: '', ir: '14.5A', is: '14.9A', it: '0.0A' }];
-  } else if (type === 'CAJA_PASE') {
-    document.getElementById('sourceType').value = 'MEDIDOR'; document.getElementById('owner').value = 'CLARO';
-    document.getElementById('isPassBox').checked = true; document.getElementById('mainBoard').value = 'Tablero PRINCIPAL (CAJA DE PASE)';
-    document.getElementById('phases').value = '1F';
-    branches = [{ name: 'Tablero OPERADOR CLARO', itm: '', eq: 'EQUIPOS CLARO', eqItm: '2x63A', ir: '15.8A', is: '16.2A', it: '0.0A' }];
-  } else if (type === 'POSTE_TRAFO') {
-    document.getElementById('sourceType').value = 'POSTE_TRAFO'; document.getElementById('owner').value = 'TU';
-    document.getElementById('isPassBox').checked = false; document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
-    document.getElementById('mainItm').value = '3x125A'; document.getElementById('phases').value = '3F';
-    branches = [
-      { name: 'Tablero TELEFONICA', itm: '3x100A', eq: 'EQUIPOS TELEFONICA', eqItm: '2x63A', ir: '20.1A', is: '19.5A', it: '0.0A' },
-      { name: 'Tablero CLARO', itm: '3x100A', eq: 'EQUIPOS CLARO', eqItm: '2x80A', ir: '11.8A', is: '12.1A', it: '0.0A' }
+function quickItm(amp) { tabBranches.push({ name: 'TABLERO OPERADOR', itm: amp, eq: 'EQUIPOS', eqItm: '2x40A' }); renderTabBranches(); drawTab(); }
+function applyTabPreset(t) {
+  if (t === 'MED_OP') {
+    document.getElementById('tabSource').value = 'MEDIDOR'; document.getElementById('tabOwner').value = 'ENTEL';
+    document.getElementById('tabPassBox').checked = false; document.getElementById('tabMain').value = 'Tablero OPERADOR ENTEL (Indep.)';
+    document.getElementById('tabItm').value = '3x63A';
+    tabBranches = [{ name: 'EQUIPOS ENTEL', itm: '2x40A', eq: 'RECTIFICADOR', eqItm: '' }];
+  } else if (t === 'CAJA_PASE') {
+    document.getElementById('tabSource').value = 'MEDIDOR'; document.getElementById('tabOwner').value = 'CLARO';
+    document.getElementById('tabPassBox').checked = true; document.getElementById('tabMain').value = 'Tablero PRINCIPAL (CAJA DE PASE)';
+    tabBranches = [{ name: 'Tablero OPERADOR CLARO', itm: '', eq: 'EQUIPOS CLARO', eqItm: '2x63A' }];
+  } else if (t === 'POSTE_TRAFO') {
+    document.getElementById('tabSource').value = 'POSTE_TRAFO'; document.getElementById('tabOwner').value = 'TU';
+    document.getElementById('tabPassBox').checked = false; document.getElementById('tabMain').value = 'Tablero PRINCIPAL TU';
+    document.getElementById('tabItm').value = '3x125A';
+    tabBranches = [
+      { name: 'Tablero TELEFONICA', itm: '3x100A', eq: 'EQUIPOS TELEFONICA', eqItm: '2x63A' },
+      { name: 'Tablero CLARO', itm: '3x100A', eq: 'EQUIPOS CLARO', eqItm: '2x80A' }
     ];
-  } else if (type === '2OP') {
-    document.getElementById('sourceType').value = 'MEDIDOR'; document.getElementById('owner').value = 'TU';
-    document.getElementById('isPassBox').checked = false; document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
-    document.getElementById('mainItm').value = '3x100A'; document.getElementById('phases').value = '3F';
-    branches = [
-      { name: 'Tablero CLARO', itm: '3x50A', eq: 'EQUIPOS CLARO', eqItm: '2x40A', ir: '12.1A', is: '15.0A', it: '11.8A' },
-      { name: 'Tablero ENTEL', itm: '3x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A', ir: '24.1A', is: '23.1A', it: '20.2A' }
+  } else {
+    document.getElementById('tabSource').value = 'MEDIDOR'; document.getElementById('tabOwner').value = 'TU';
+    document.getElementById('tabPassBox').checked = false; document.getElementById('tabMain').value = 'Tablero PRINCIPAL TU';
+    document.getElementById('tabItm').value = '3x100A';
+    tabBranches = [
+      { name: 'Tablero CLARO', itm: '3x50A', eq: 'EQUIPOS CLARO', eqItm: '2x40A' },
+      { name: 'Tablero ENTEL', itm: '3x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A' }
     ];
   }
-  renderBranches(); draw();
+  renderTabBranches(); drawTab();
 }
-function renderBranches() {
-  const list = document.getElementById('branchList'); list.innerHTML = '';
-  branches.forEach((b, i) => {
-    const el = document.createElement('div'); el.className = 'branch';
-    el.innerHTML = `
-      <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.8rem; font-weight:700;">
-        <span>Derivación #${i + 1}</span>
-        <button class="btn-red" onclick="branches.splice(${i},1); renderBranches(); draw();">Quitar</button>
-      </div>
-      <div class="g2">
-        <div><label>Tablero Destino</label><input type="text" value="${b.name}" oninput="branches[${i}].name=this.value; draw();"></div>
-        <div><label>ITM Salida</label><input type="text" value="${b.itm}" oninput="branches[${i}].itm=this.value; draw();"></div>
-      </div>
-      <div class="g2" style="margin-top:5px;">
-        <div><label>Carga Final</label><input type="text" value="${b.eq}" oninput="branches[${i}].eq=this.value; draw();"></div>
-        <div><label>ITM Carga</label><input type="text" value="${b.eqItm}" oninput="branches[${i}].eqItm=this.value; draw();"></div>
-      </div>
-      <div class="g3" style="margin-top:5px;">
-        <div><label>Ir</label><input type="text" value="${b.ir}" oninput="branches[${i}].ir=this.value; draw();"></div>
-        <div><label>Is</label><input type="text" value="${b.is}" oninput="branches[${i}].is=this.value; draw();"></div>
-        <div><label>It</label><input type="text" value="${b.it}" oninput="branches[${i}].it=this.value; draw();"></div>
-      </div>`;
-    list.appendChild(el);
+function renderTabBranches() {
+  const box = document.getElementById('tabBranchesUI'); box.innerHTML = '';
+  tabBranches.forEach((b, i) => {
+    const d = document.createElement('div'); d.className = 'branch-item';
+    d.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:0.78rem; font-weight:700;"><span>Derivación #${i+1}</span><button class="btn-danger" onclick="tabBranches.splice(${i},1); renderTabBranches(); drawTab();">Quitar</button></div>
+    <div class="g2"><input type="text" value="${b.name}" oninput="tabBranches[${i}].name=this.value; drawTab();"><input type="text" value="${b.itm}" oninput="tabBranches[${i}].itm=this.value; drawTab();"></div>
+    <div class="g2" style="margin-top:5px;"><input type="text" value="${b.eq}" oninput="tabBranches[${i}].eq=this.value; drawTab();"><input type="text" value="${b.eqItm}" oninput="tabBranches[${i}].eqItm=this.value; drawTab();"></div>`;
+    box.appendChild(d);
+  });
+}
+function addTabBranch() { tabBranches.push({ name: 'TABLERO ENTEL', itm: '2x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A' }); renderTabBranches(); drawTab(); }
+function mLine(ctx, x1, y1, x2, y2, col = '#18181b', w = 2.6) {
+  const j = () => (Math.random() - 0.5) * 1.1;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1 + j(), y1 + j()); ctx.lineTo((x1 + x2) / 2 + j(), (y1 + y2) / 2 + j()); ctx.lineTo(x2 + j(), y2 + j()); ctx.stroke(); ctx.restore();
+}
+function mRect(ctx, x, y, w, h, col = '#18181b') {
+  mLine(ctx, x - 3, y, x + w + 3, y, col); mLine(ctx, x + w, y - 3, x + w, y + h + 3, col);
+  mLine(ctx, x + w + 3, y + h, x - 3, y + h, col); mLine(ctx, x, y + h + 3, x, y - 3, col);
+}
+function mTxt(ctx, t, x, y, sz = 18, col = '#18181b', al = 'center', b = false) {
+  if (!t) return;
+  ctx.save(); ctx.font = `${b ? '700' : '400'} ${sz}px 'Kalam', cursive`; ctx.fillStyle = col; ctx.textAlign = al; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y); ctx.restore();
+}
+function mBreaker(ctx, x, y, amp) {
+  mLine(ctx, x - 22, y, x, y); mLine(ctx, x - 14, y - 15, x, y); mLine(ctx, x, y, x, y - 16); mLine(ctx, x, y - 16, x + 12, y - 16); mLine(ctx, x + 12, y - 16, x + 12, y); mLine(ctx, x + 12, y, x + 22, y);
+  ctx.save(); ctx.strokeStyle = '#18181b'; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(x + 28, y - 10, 6, Math.PI, 0); ctx.stroke(); ctx.restore();
+  mLine(ctx, x + 34, y - 10, x + 34, y); mLine(ctx, x + 34, y, x + 52, y);
+  if (amp) mTxt(ctx, amp, x + 16, y + 23, 18, '#c81e1e', 'center', true);
+}
+function drawTab() {
+  const c = document.getElementById('cTab'), ctx = c.getContext('2d');
+  c.height = Math.max(660, 260 + tabBranches.length * 165);
+  ctx.fillStyle = '#fdfdfb'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.strokeStyle = 'rgba(148,163,184,0.22)'; ctx.lineWidth = 1;
+  for (let x = 0; x < c.width; x += 24) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, c.height); ctx.stroke(); }
+  for (let y = 0; y < c.height; y += 24) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke(); }
+
+  const y0 = 225, src = document.getElementById('tabSource').value;
+  mTxt(ctx, `DIAGRAMA UNIFILAR DEL SITE "${getSite()}"`, c.width / 2, 35, 23, '#0b1f3a', 'center', true);
+  mLine(ctx, c.width / 2 - 230, 50, c.width / 2 + 230, 50);
+
+  if (src === 'MEDIDOR') {
+    mTxt(ctx, 'Medidor', 110, 90, 19, '#18181b', 'center', true); mTxt(ctx, document.getElementById('tabOwner').value, 110, 112, 19, '#1d4ed8', 'center', true);
+    mRect(ctx, 50, 130, 120, 45); mTxt(ctx, document.getElementById('tabSerial').value, 110, 153, 16, '#18181b', 'center', true);
+    mRect(ctx, 50, 182, 120, 125); mBreaker(ctx, 90, y0, '');
+    mRect(ctx, 68, 258, 84, 32); mTxt(ctx, document.getElementById('tabKwh').value, 110, 275, 15, '#18181b', 'center', true);
+    mLine(ctx, 142, y0, 300, y0);
+  } else if (src === 'POSTE_TRAFO') {
+    mLine(ctx, 85, y0 - 85, 85, y0 + 85, '#18181b', 3.4); mLine(ctx, 57, y0 - 72, 113, y0 - 72, '#18181b', 3);
+    ctx.strokeStyle = '#1d4ed8'; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(111, y0 - 12, 18, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(111, y0 + 12, 18, 0, Math.PI * 2); ctx.stroke();
+    mLine(ctx, 129, y0, 300, y0); mTxt(ctx, 'POSTE', 107, y0 - 92, 16, '#18181b', 'center', true);
+    mTxt(ctx, 'Sin medidor / Conexión directa', 160, y0 + 50, 14, '#c81e1e', 'center', true);
+    mTxt(ctx, 'TRANSFORMADOR', 160, y0 + 68, 15, '#c81e1e', 'center', true);
+  } else {
+    mLine(ctx, 40, y0, 300, y0);
+    mTxt(ctx, 'Medidor no ubicado,', 140, y0 - 32, 16, '#c81e1e', 'center', true); mTxt(ctx, 'conexión directa', 140, y0 - 13, 16, '#c81e1e', 'center', true);
+  }
+
+  const boxH = Math.max(235, 135 + tabBranches.length * 150);
+  mTxt(ctx, document.getElementById('tabMain').value, 470, 98, 20, '#18181b', 'center', true); mRect(ctx, 300, 120, 340, boxH);
+  const busX = 505;
+  if (document.getElementById('tabPassBox').checked) {
+    mLine(ctx, 300, y0, busX, y0, '#18181b', 2.8);
+    mTxt(ctx, 'CAJA DE PASE', 400, y0 - 25, 17, '#c81e1e', 'center', true);
+  } else {
+    mTxt(ctx, 'Interruptor General', 385, 165, 16, '#18181b', 'center', true);
+    mBreaker(ctx, 365, y0, document.getElementById('tabItm').value); mLine(ctx, 417, y0, busX, y0);
+  }
+  mTxt(ctx, `Vrs=${document.getElementById('vrs').value}`, 318, y0 + 55, 15, '#18181b', 'left');
+  mTxt(ctx, `Vst=${document.getElementById('vst').value}`, 318, y0 + 75, 15, '#18181b', 'left');
+  mTxt(ctx, `Vrt=${document.getElementById('vrt').value}`, 318, y0 + 95, 15, '#18181b', 'left');
+  mTxt(ctx, `Ir=${document.getElementById('ir').value}`, 420, y0 + 55, 15, '#1d4ed8', 'left');
+  mTxt(ctx, `Is=${document.getElementById('is').value}`, 420, y0 + 75, 15, '#1d4ed8', 'left');
+  mTxt(ctx, `It=${document.getElementById('it').value}`, 420, y0 + 95, 15, '#1d4ed8', 'left');
+
+  if (tabBranches.length > 1) mLine(busX, y0, busX, y0 + (tabBranches.length - 1) * 150, '#18181b', 3.2);
+  tabBranches.forEach((b, i) => {
+    const by = y0 + i * 150;
+    if (b.itm) { mLine(busX, by, 535, by); mBreaker(ctx, 555, by, b.itm); mLine(ctx, 607, by, 760, by); } else { mLine(busX, by, 760, by); }
+    mTxt(ctx, b.name, 880, by - 64, 17, '#18181b', 'center', true); mRect(ctx, 760, by - 50, 460, 108);
+    if (b.eqItm) { mLine(ctx, 760, by, 815, by); mBreaker(ctx, 835, by, b.eqItm); mLine(ctx, 887, by, 1010, by); } else { mLine(ctx, 760, by, 1010, by); }
+    mRect(ctx, 1010, by - 24, 185, 48, '#1d4ed8'); mTxt(ctx, b.eq || b.name, 1102, by, 16, '#1d4ed8', 'center', true);
   });
 }
 
-function addBranch() {
-  branches.push({ name: 'TABLERO ENTEL', itm: '2x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A', ir: '11.5A', is: '12.0A', it: '0.0A' });
-  renderBranches(); draw();
+let panoImgs = [], panoFull = document.createElement('canvas'), yaw = 0, pitch = 0, fov = 90, drag360 = false, lx = 0, ly = 0;
+document.getElementById('panoFiles').addEventListener('change', (e) => {
+  const files = Array.from(e.target.files); panoImgs = [];
+  files.forEach(f => { const im = new Image(); im.onload = () => { panoImgs.push(im); if (panoImgs.length === files.length) buildPano(); }; im.src = URL.createObjectURL(f); });
+});
+function buildPano() {
+  if (!panoImgs.length) return;
+  const ov = (parseInt(document.getElementById('panoOv').value) || 0) / 100, W = 2048, H = 1024;
+  panoFull.width = W; panoFull.height = H; const pCtx = panoFull.getContext('2d');
+  const sw = W / (panoImgs.length - (panoImgs.length - 1) * ov);
+  panoImgs.forEach((im, i) => pCtx.drawImage(im, i * sw * (1 - ov), 0, sw, H));
+  const c2 = document.getElementById('cPano2D'); c2.getContext('2d').drawImage(panoFull, 0, 0, c2.width, c2.height);
+  render360();
 }
-
-function jit(n = 1.1) { return document.getElementById('handStyle').checked ? (Math.random() - 0.5) * n : 0; }
-function line(x1, y1, x2, y2, color = '#18181b', w = 2.6) {
-  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x1 + jit(), y1 + jit());
-  ctx.lineTo((x1 + x2) / 2 + jit(), (y1 + y2) / 2 + jit());
-  ctx.lineTo(x2 + jit(), y2 + jit()); ctx.stroke(); ctx.restore();
-}
-function rect(x, y, w, h, color = '#18181b') {
-  const o = document.getElementById('handStyle').checked ? 3 : 0;
-  line(x - o, y, x + w + o, y, color); line(x + w, y - o, x + w, y + h + o, color);
-  line(x + w + o, y + h, x - o, y + h, color); line(x, y + h + o, x, y - o, color);
-}
-function circle(cx, cy, r, color = '#18181b') {
-  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.6;
-  ctx.beginPath(); ctx.arc(cx + jit(0.5), cy + jit(0.5), r, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-}
-function txt(t, x, y, size = 18, color = '#18181b', align = 'center', bold = false) {
-  if (!t) return;
-  ctx.save(); ctx.font = `${bold ? '700' : '400'} ${size}px 'Kalam', cursive`;
-  ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y); ctx.restore();
-}
-function breaker(x, y, amp) {
-  line(x - 22, y, x, y); line(x - 14, y - 15, x, y);
-  line(x, y, x, y - 16); line(x, y - 16, x + 12, y - 16); line(x + 12, y - 16, x + 12, y); line(x + 12, y, x + 22, y);
-  ctx.save(); ctx.strokeStyle = '#18181b'; ctx.lineWidth = 2.6;
-  ctx.beginPath(); ctx.arc(x + 28, y - 10, 6, Math.PI, 0); ctx.stroke(); ctx.restore();
-  line(x + 34, y - 10, x + 34, y); line(x + 34, y, x + 52, y);
-  if (amp) txt(amp, x + 16, y + 23, 18, '#c81e1e', 'center', true);
-}
-function slashes(x, y, mode) {
-  const c = mode === '3F+N' ? 4 : (mode === '3F' ? 3 : 2);
-  for (let i = 0; i < c; i++) { const sx = x - ((c - 1) * 7) / 2 + i * 7; line(sx - 5, y - 11, sx + 5, y + 11, '#1e3a8a', 2); }
-}
-function drawPosteTransformador(x, y) {
-  line(x, y - 85, x, y + 85, '#18181b', 3.4); line(x - 28, y - 72, x + 28, y - 72, '#18181b', 3);
-  line(x - 20, y - 80, x - 20, y - 72); line(x + 20, y - 80, x + 20, y - 72);
-  circle(x + 26, y - 12, 18, '#1e3a8a'); circle(x + 26, y + 12, 18, '#1e3a8a');
-  line(x + 44, y, x + 85, y, '#18181b', 2.6);
-  txt('POSTE', x + 22, y - 92, 16, '#18181b', 'center', true);
-  txt('Sin medidor / Conexión directa', x + 75, y + 50, 14, '#c81e1e', 'center', true);
-  txt('TRANSFORMADOR', x + 75, y + 68, 15, '#c81e1e', 'center', true);
-}
-
-function draw() {
-  canvas.height = Math.max(660, 260 + branches.length * 165);
-  ctx.fillStyle = '#fdfdfb'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-  if (document.getElementById('gridBg').checked) {
-    ctx.strokeStyle = 'rgba(148,163,184,0.22)'; ctx.lineWidth = 1;
-    for (let x = 0; x < canvas.width; x += 24) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-    for (let y = 0; y < canvas.height; y += 24) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+const c360 = document.getElementById('c360'), ctx360 = c360.getContext('2d');
+c360.addEventListener('mousedown', e => { drag360 = true; lx = e.clientX; ly = e.clientY; });
+window.addEventListener('mouseup', () => drag360 = false);
+c360.addEventListener('mousemove', e => { if (!drag360 || !panoImgs.length) return; yaw -= (e.clientX - lx) * 0.35; pitch = Math.max(-80, Math.min(80, pitch + (e.clientY - ly) * 0.35)); lx = e.clientX; ly = e.clientY; render360(); });
+c360.addEventListener('wheel', e => { if (!panoImgs.length) return; e.preventDefault(); fov = Math.max(35, Math.min(120, fov + (e.deltaY > 0 ? 5 : -5))); render360(); });
+function render360() {
+  if (!panoImgs.length) return;
+  const w = c360.width, h = c360.height, pw = panoFull.width, ph = panoFull.height;
+  const src = panoFull.getContext('2d').getImageData(0, 0, pw, ph).data, out = ctx360.createImageData(w, h), dst = out.data;
+  const f = 0.5 * w / Math.tan((fov * Math.PI) / 360), pR = pitch * Math.PI / 180, yR = yaw * Math.PI / 180;
+  const cP = Math.cos(pR), sP = Math.sin(pR), cY = Math.cos(yR), sY = Math.sin(yR);
+  for (let py = 0; py < h; py += 2) {
+    for (let px = 0; px < w; px += 2) {
+      const dx = px - w / 2, dy = py - h / 2, y1 = dy * cP - f * sP, z1 = dy * sP + f * cP;
+      const x2 = dx * cY + z1 * sY, z2 = -dx * sY + z1 * cY, n = Math.hypot(x2, y1, z2);
+      let u = Math.floor(((Math.atan2(x2 / n, z2 / n) / (2 * Math.PI)) + 0.5) * pw) % pw; if (u < 0) u += pw;
+      const v = Math.max(0, Math.min(ph - 1, Math.floor(((Math.asin(Math.max(-1, Math.min(1, y1 / n))) / Math.PI) + 0.5) * ph)));
+      const s = (v * pw + u) * 4;
+      for (let oy = 0; oy < 2 && py + oy < h; oy++) for (let ox = 0; ox < 2 && px + ox < w; ox++) {
+        const d = ((py + oy) * w + (px + ox)) * 4; dst[d] = src[s]; dst[d+1] = src[s+1]; dst[d+2] = src[s+2]; dst[d+3] = 255;
+      }
+    }
   }
-  const site = (document.getElementById('siteName').value || 'SITIO').toUpperCase();
-  const owner = document.getElementById('owner').value;
-  const sourceType = document.getElementById('sourceType').value;
-  const mainBoard = document.getElementById('mainBoard').value;
-  const phases = document.getElementById('phases').value;
-  const isPassBox = document.getElementById('isPassBox').checked;
-  const mainItm = document.getElementById('mainItm').value;
-  const bridge = document.getElementById('bridge').value;
-  const y0 = 225;
-
-  txt(`DIAGRAMA UNIFILAR DEL SITE "${site}"`, canvas.width / 2, 35, 23, '#0f172a', 'center', true);
-  line(canvas.width / 2 - 230, 50, canvas.width / 2 + 230, 50);
-
-  if (sourceType === 'MEDIDOR') {
-    txt('Medidor', 110, 90, 19, '#18181b', 'center', true); txt(owner, 110, 112, 19, '#1e3a8a', 'center', true);
-    rect(50, 130, 120, 45); txt(document.getElementById('serial').value, 110, 153, 16, '#18181b', 'center', true);
-    rect(50, 182, 120, 125); breaker(90, y0, '');
-    rect(68, 258, 84, 32); txt(document.getElementById('kwh').value, 110, 275, 15, '#18181b', 'center', true);
-    line(142, y0, 300, y0); slashes(225, y0, phases);
-  } else if (sourceType === 'POSTE_TRAFO') {
-    drawPosteTransformador(85, y0); line(170, y0, 300, y0); slashes(240, y0, phases);
-  } else {
-    line(40, y0, 300, y0); slashes(245, y0, phases);
-    txt('Medidor no ubicado,', 140, y0 - 32, 16, '#c81e1e', 'center', true); txt('conexión directa', 140, y0 - 13, 16, '#c81e1e', 'center', true);
-  }
-
-  const boxH = Math.max(235, 135 + branches.length * 150);
-  txt(mainBoard, 470, 98, 20, '#18181b', 'center', true); rect(300, 120, 340, boxH);
-  const busX = 505;
-  if (isPassBox) {
-    line(300, y0, busX, y0, '#18181b', 2.8); circle(400, y0, 5, '#c81e1e');
-    txt('CAJA DE PASE', 400, y0 - 28, 17, '#c81e1e', 'center', true); txt('(Paso directo)', 400, y0 - 10, 14, '#475569', 'center');
-  } else {
-    txt('Interruptor General', 385, 165, 16, '#18181b', 'center', true);
-    breaker(365, y0, mainItm); line(417, y0, busX, y0);
-    if (bridge) txt(bridge, 385, y0 + 44, 14, '#1e3a8a', 'center', true);
-  }
-  const ey = bridge ? y0 + 68 : y0 + 52;
-  txt(`Vrs=${document.getElementById('vrs').value}`, 318, ey, 15, '#18181b', 'left');
-  txt(`Vst=${document.getElementById('vst').value}`, 318, ey + 20, 15, '#18181b', 'left');
-  txt(`Vrt=${document.getElementById('vrt').value}`, 318, ey + 40, 15, '#18181b', 'left');
-  txt(`Ir=${document.getElementById('ir').value}`, 420, ey, 15, '#1e3a8a', 'left');
-  txt(`Is=${document.getElementById('is').value}`, 420, ey + 20, 15, '#1e3a8a', 'left');
-  txt(`It=${document.getElementById('it').value}`, 420, ey + 40, 15, '#1e3a8a', 'left');
-
-  if (branches.length > 0) {
-    if (branches.length > 1) line(busX, y0, busX, y0 + (branches.length - 1) * 150, '#18181b', 3.2);
-    branches.forEach((b, i) => {
-      const by = y0 + i * 150;
-      if (b.itm) { line(busX, by, 535, by); breaker(555, by, b.itm); line(607, by, 760, by); } else { line(busX, by, 760, by); }
-      slashes(690, by, (b.itm || mainItm).startsWith('3') ? '3F' : '1F');
-      txt(`Ir=${b.ir}  Is=${b.is}  It=${b.it}`, 705, by + 26, 14, '#1e3a8a', 'center');
-      txt(b.name, 880, by - 64, 17, '#18181b', 'center', true); rect(760, by - 50, 460, 108);
-      if (b.eqItm) { line(760, by, 815, by); breaker(835, by, b.eqItm); line(887, by, 1010, by); } else { line(760, by, 1010, by); }
-      rect(1010, by - 24, 185, 48, '#1e3a8a'); txt(b.eq || b.name, 1102, by, 16, '#1e3a8a', 'center', true);
-    });
-  }
+  ctx360.putImageData(out, 0, 0);
+}
+function dlPano() {
+  if (!panoImgs.length) return alert('Primero carga fotos y genera la panorámica.');
+  const a = document.createElement('a'); a.download = `360_${getSite().replace(/\s+/g, '_')}.jpg`;
+  a.href = panoFull.toDataURL('image/jpeg', (parseInt(document.getElementById('panoQual').value) || 92) / 100); a.click();
 }
 
-function downloadPNG() {
-  const site = (document.getElementById('siteName').value || 'SITE').trim().replace(/\s+/g, '_');
-  const a = document.createElement('a'); a.download = `Diagrama_Unifilar_${site}.png`; a.href = canvas.toDataURL('image/png'); a.click();
-}
-
-const savedGlobalSite = localStorage.getItem(GLOBAL_SITE_KEY);
-if (savedGlobalSite) {
-  document.getElementById("globalSiteInput").value = savedGlobalSite;
-  document.getElementById("siteName").value = savedGlobalSite;
-}
-renderBranches();
-document.fonts.ready.then(() => draw());
+renderEqUI(); renderTabBranches();
+document.fonts.ready.then(() => syncAll());
 </script>
 </body>
 </html>
