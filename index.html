@@ -3,159 +3,258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diagrama Unifilar Interactivo - Estilo Plumón</title>
+  <title>Suite Técnica Unificada • Torres Unidas</title>
   <link href="https://googleapis.com" rel="stylesheet">
   <style>
-    :root { --primary: #0f4c81; --bg: #eef2f6; --card: #ffffff; --border: #cbd5e1; --text: #1e293b; }
+    :root { --primary: #0f4c81; --dark: #092e4e; --bg: #eef2f6; --card: #ffffff; --border: #cbd5e1; --text: #1e293b; }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
-    header {
-      background: var(--primary); color: #fff; padding: 14px 20px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    nav.topbar {
+      background: var(--dark); color: #fff; padding: 10px 18px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.22);
     }
-    header h1 { margin: 0; font-size: 1.15rem; }
-    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-    .btn-header {
-      padding: 11px 16px; border-radius: 8px; border: none; font-weight: 700;
-      font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.18); transition: transform 0.1s;
+    .brand-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .brand { font-weight: 700; font-size: 1.05rem; }
+    .global-site-box {
+      display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.14);
+      padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.28);
     }
-    .btn-header:hover { transform: translateY(-1px); }
-    .btn-tpl { background: #ffffff; color: #0f4c81; }
-    .btn-tpl:hover { background: #e0f2fe; }
-    .btn-dl { background: #16a34a; color: #fff; font-size: 0.95rem; padding: 11px 20px; }
-    .btn-dl:hover { background: #15803d; }
-    .layout { display: grid; grid-template-columns: 430px 1fr; gap: 16px; padding: 16px; max-width: 1650px; margin: 0 auto; }
+    .global-site-box span { font-size: 0.74rem; font-weight: 700; color: #bae6fd; text-transform: uppercase; }
+    .global-site-box input {
+      width: 175px; padding: 5px 8px; border-radius: 5px; border: none;
+      font-weight: 700; font-size: 0.86rem; text-transform: uppercase; color: #0f172a;
+    }
+    .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab-btn {
+      padding: 10px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
+      font-weight: 700; font-size: 0.88rem; cursor: pointer;
+      background: rgba(255,255,255,0.12); color: #fff;
+    }
+    .tab-btn.active { background: #ffffff; color: var(--primary); border-color: #fff; }
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+    .app-frame { width: 100%; height: calc(100vh - 64px); border: none; display: block; background: #fff; }
+    .tablero-wrap { padding: 16px; max-width: 1650px; margin: 0 auto; }
+    .subbar {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px;
+      margin-bottom: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    }
+    .btn-big {
+      padding: 10px 14px; border-radius: 8px; border: none; font-weight: 700; font-size: 0.86rem;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-tpl { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+    .btn-dl { background: #16a34a; color: #fff; font-size: 0.92rem; }
+    .btn-blue { background: var(--primary); color: #fff; }
+    .btn-gray { background: #e2e8f0; color: #1e293b; }
+    .btn-red { background: #fee2e2; color: #b91c1c; padding: 3px 7px; font-size: 0.72rem; border-radius: 5px; border: none; cursor: pointer; }
+    .layout { display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
     @media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
-    .scroll-box { max-height: calc(100vh - 95px); overflow-y: auto; }
-    h2 { margin: 0 0 8px 0; font-size: 0.85rem; color: var(--primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; }
+    .scroll-box { max-height: calc(100vh - 155px); overflow-y: auto; }
+    h2 { margin: 0 0 8px 0; font-size: 0.84rem; color: var(--primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; }
     .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 12px; }
     .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
     label { display: block; font-size: 0.72rem; font-weight: 600; color: #475569; margin-bottom: 2px; }
     input[type="text"], select { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.82rem; }
-    .btn { padding: 8px 12px; border-radius: 6px; border: none; font-weight: 600; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
-    .btn-blue { background: var(--primary); color: #fff; }
-    .btn-gray { background: #e2e8f0; color: #1e293b; }
-    .btn-red { background: #fee2e2; color: #b91c1c; padding: 3px 7px; font-size: 0.72rem; }
     .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
     .chip { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; padding: 4px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
-    .chip:hover { background: #bae6fd; }
     .branch { background: #fff; border: 1px solid #cbd5e1; border-left: 4px solid var(--primary); border-radius: 6px; padding: 9px; margin-bottom: 8px; }
     .photo-viewer { margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #0f172a; text-align: center; display: none; }
-    .photo-viewer img { max-width: 100%; max-height: 220px; object-fit: contain; transition: transform 0.2s; cursor: zoom-in; }
+    .photo-viewer img { max-width: 100%; max-height: 210px; object-fit: contain; cursor: zoom-in; transition: 0.2s; }
     .photo-viewer img.zoomed { transform: scale(1.8); cursor: zoom-out; }
     .canvas-area { background: #cbd5e1; border-radius: 8px; padding: 12px; overflow: auto; display: flex; justify-content: center; }
     canvas { background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.15); border-radius: 4px; max-width: 100%; height: auto; }
   </style>
 </head>
 <body>
-<header>
-  <h1>Diagrama Unifilar • Estilo Plumón (Torres Unidas)</h1>
-  <div class="header-actions">
-    <button class="btn-header btn-tpl" onclick="applyPreset('MED_OP')">📋 Medidor → Tab. Operador Indep.</button>
-    <button class="btn-header btn-tpl" onclick="applyPreset('CAJA_PASE')">📦 Tab. Principal (Caja de Pase) → Operador</button>
-    <button class="btn-header btn-tpl" onclick="applyPreset('POSTE_TRAFO')">⚡ Poste Transformador (Sin Medidor)</button>
-    <button class="btn-header btn-tpl" onclick="applyPreset('2OP')">🏢 Estándar 2 Operadores</button>
-    <button class="btn-header btn-dl" onclick="downloadPNG()">⬇ DESCARGAR PNG</button>
+<nav class="topbar">
+  <div class="brand-group">
+    <div class="brand">🛠️ Suite Técnica • Torres Unidas</div>
+    <div class="global-site-box" title="Sincroniza este nombre en todas las pestañas">
+      <span>Sitio:</span>
+      <input type="text" id="globalSiteInput" value="CORA CORA" oninput="syncSiteName(this.value, 'global')" />
+    </div>
   </div>
-</header>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="openModule('mod-esquemas', this)">🏗️ 1-4. Esquemas Técnicos</button>
+    <button class="tab-btn" onclick="openModule('mod-tableros', this)">⚡ 5. Diagrama de Tableros</button>
+    <button class="tab-btn" onclick="openModule('mod-pano', this)">🌐 6. Fotos Panorámicas & 360°</button>
+  </div>
+</nav>
 
-<div class="layout">
-  <div class="card scroll-box">
-    <h2>1. Visor Rápido de Foto (Tablero / Medidor)</h2>
-    <div class="box">
-      <input type="file" id="photoInput" accept="image/*" multiple style="font-size:0.78rem; width:100%;" />
-      <div id="photoTabs" class="chips"></div>
-      <div class="photo-viewer" id="photoViewer">
-        <img id="previewImg" title="Clic para hacer Zoom" onclick="this.classList.toggle('zoomed')" />
+<section id="mod-esquemas" class="view-section active">
+  <iframe id="frameEsquemas" class="app-frame" src="https://github.io" title="Esquemas Técnicos"></iframe>
+</section>
+
+<section id="mod-tableros" class="view-section">
+  <div class="tablero-wrap">
+    <div class="subbar">
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-big btn-tpl" onclick="applyPreset('MED_OP')">📋 Medidor → Tab. Operador Indep.</button>
+        <button class="btn-big btn-tpl" onclick="applyPreset('CAJA_PASE')">📦 Tab. Principal (Caja de Pase)</button>
+        <button class="btn-big btn-tpl" onclick="applyPreset('POSTE_TRAFO')">⚡ Poste Transformador (Sin Medidor)</button>
+        <button class="btn-big btn-tpl" onclick="applyPreset('2OP')">🏢 Estándar 2 Operadores</button>
       </div>
-      <label style="margin-top:8px;">Clic rápido para agregar llave térmica vista en la foto:</label>
-      <div class="chips">
-        <button class="chip" onclick="quickAddItm('3x125A')">+ 3x125A</button>
-        <button class="chip" onclick="quickAddItm('3x100A')">+ 3x100A</button>
-        <button class="chip" onclick="quickAddItm('3x63A')">+ 3x63A</button>
-        <button class="chip" onclick="quickAddItm('2x63A')">+ 2x63A</button>
-        <button class="chip" onclick="quickAddItm('2x50A')">+ 2x50A</button>
-        <button class="chip" onclick="quickAddItm('2x40A')">+ 2x40A</button>
-        <button class="chip" onclick="quickAddItm('2x32A')">+ 2x32A</button>
-        <button class="chip" onclick="quickAddItm('2x25A')">+ 2x25A</button>
-      </div>
+      <button class="btn-big btn-dl" onclick="downloadPNG()">⬇ DESCARGAR PNG</button>
     </div>
 
-    <h2>2. Fuente / Acometida y Medidor</h2>
-    <div class="box">
-      <div class="g2">
-        <div><label>Nombre del Site</label><input type="text" id="siteName" value="CORA CORA" oninput="draw()"></div>
-        <div><label>Propietario / Operador</label><input type="text" id="owner" value="TU" oninput="draw()"></div>
-      </div>
-      <div style="margin-top:6px;">
-        <label>Tipo de Alimentación Inicial</label>
-        <select id="sourceType" onchange="draw()">
-          <option value="MEDIDOR">Con Medidor Existente</option>
-          <option value="DIRECTA">Medidor no ubicado, conexión directa</option>
-          <option value="POSTE_TRAFO">Poste Transformador (Sin Medidor)</option>
-        </select>
-      </div>
-      <div class="g2" style="margin-top:6px;">
-        <div><label>N° Suministro</label><input type="text" id="serial" value="18211798" oninput="draw()"></div>
-        <div><label>Lectura (kWh)</label><input type="text" id="kwh" value="5321.6 KwH" oninput="draw()"></div>
-      </div>
-    </div>
+    <div class="layout">
+      <div class="card scroll-box">
+        <h2>1. Visor Rápido de Foto (Tablero / Medidor)</h2>
+        <div class="box">
+          <input type="file" id="photoInput" accept="image/*" multiple style="font-size:0.78rem; width:100%;" />
+          <div id="photoTabs" class="chips"></div>
+          <div class="photo-viewer" id="photoViewer">
+            <img id="previewImg" title="Clic para Zoom" onclick="this.classList.toggle('zoomed')" />
+          </div>
+          <div class="chips">
+            <button class="chip" onclick="quickAddItm('3x125A')">+ 3x125A</button>
+            <button class="chip" onclick="quickAddItm('3x100A')">+ 3x100A</button>
+            <button class="chip" onclick="quickAddItm('3x63A')">+ 3x63A</button>
+            <button class="chip" onclick="quickAddItm('2x63A')">+ 2x63A</button>
+            <button class="chip" onclick="quickAddItm('2x50A')">+ 2x50A</button>
+            <button class="chip" onclick="quickAddItm('2x40A')">+ 2x40A</button>
+            <button class="chip" onclick="quickAddItm('2x32A')">+ 2x32A</button>
+          </div>
+        </div>
+        <h2>2. Fuente / Acometida y Medidor</h2>
+        <div class="box">
+          <div class="g2">
+            <div><label>Nombre del Site (Sincronizado)</label><input type="text" id="siteName" value="CORA CORA" oninput="syncSiteName(this.value, 'tablero')"></div>
+            <div><label>Propietario / Operador</label><input type="text" id="owner" value="TU" oninput="draw()"></div>
+          </div>
+          <div style="margin-top:6px;">
+            <label>Tipo de Alimentación Inicial</label>
+            <select id="sourceType" onchange="draw()">
+              <option value="MEDIDOR">Con Medidor Existente</option>
+              <option value="DIRECTA">Medidor no ubicado, conexión directa</option>
+              <option value="POSTE_TRAFO">Poste Transformador (Sin Medidor)</option>
+            </select>
+          </div>
+          <div class="g2" style="margin-top:6px;">
+            <div><label>N° Suministro</label><input type="text" id="serial" value="18211798" oninput="draw()"></div>
+            <div><label>Lectura (kWh)</label><input type="text" id="kwh" value="5321.6 KwH" oninput="draw()"></div>
+          </div>
+        </div>
 
-    <h2>3. Tablero Principal / Caja de Pase</h2>
-    <div class="box">
-      <div class="g2">
-        <div><label>Tablero Principal</label><input type="text" id="mainBoard" value="Tablero PRINCIPAL TU" oninput="draw()"></div>
-        <div><label>Acometida</label>
-          <select id="phases" onchange="draw()">
-            <option value="3F">Trifásico (3F)</option>
-            <option value="3F+N">Trifásico + Neutro (3F+N)</option>
-            <option value="1F">Monofásico (2 Fases)</option>
-          </select>
+        <h2>3. Tablero Principal / Caja de Pase</h2>
+        <div class="box">
+          <div class="g2">
+            <div><label>Tablero Principal</label><input type="text" id="mainBoard" value="Tablero PRINCIPAL TU" oninput="draw()"></div>
+            <div><label>Acometida</label>
+              <select id="phases" onchange="draw()">
+                <option value="3F">Trifásico (3F)</option>
+                <option value="3F+N">Trifásico + Neutro (3F+N)</option>
+                <option value="1F">Monofásico (2 Fases)</option>
+              </select>
+            </div>
+          </div>
+          <label style="display:flex; align-items:center; gap:6px; margin:7px 0; cursor:pointer; font-weight:700; color:#0f4c81;">
+            <input type="checkbox" id="isPassBox" onchange="draw()"> Usar como CAJA DE PASE
+          </label>
+          <div class="g2">
+            <div><label>ITM General</label><input type="text" id="mainItm" value="3x100A" oninput="draw()"></div>
+            <div><label>Nota Puenteo</label><input type="text" id="bridge" placeholder="Ej. Puenteado S con T" oninput="draw()"></div>
+          </div>
+          <label style="margin-top:6px;">Voltajes (Vrs / Vst / Vrt)</label>
+          <div class="g3">
+            <input type="text" id="vrs" value="218V" oninput="draw()">
+            <input type="text" id="vst" value="216V" oninput="draw()">
+            <input type="text" id="vrt" value="219V" oninput="draw()">
+          </div>
+          <label style="margin-top:6px;">Corrientes (Ir / Is / It)</label>
+          <div class="g3">
+            <input type="text" id="ir" value="19.25A" oninput="draw()">
+            <input type="text" id="is" value="18.79A" oninput="draw()">
+            <input type="text" id="it" value="0.0A" oninput="draw()">
+          </div>
+        </div>
+
+        <h2>4. Tableros Operadores / Derivaciones</h2>
+        <div id="branchList"></div>
+        <button class="btn-big btn-blue" style="width:100%; justify-content:center;" onclick="addBranch()">+ Agregar Derivación Manual</button>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="display:flex; gap:12px;">
+            <label style="display:flex; align-items:center; gap:5px; margin:0;"><input type="checkbox" id="gridBg" checked onchange="draw()"> Hoja cuadriculada</label>
+            <label style="display:flex; align-items:center; gap:5px; margin:0;"><input type="checkbox" id="handStyle" checked onchange="draw()"> Pulso a mano</label>
+          </div>
+          <button class="btn-big btn-gray" onclick="draw()">🔄 Redibujar</button>
+        </div>
+        <div class="canvas-area">
+          <canvas id="canvas" width="1280" height="700"></canvas>
         </div>
       </div>
-      <label style="display:flex; align-items:center; gap:6px; margin:7px 0; cursor:pointer; font-weight:700; color:#0f4c81;">
-        <input type="checkbox" id="isPassBox" onchange="draw()"> Usar Tablero Principal como CAJA DE PASE
-      </label>
-      <div class="g2">
-        <div><label>ITM General</label><input type="text" id="mainItm" value="3x100A" oninput="draw()"></div>
-        <div><label>Nota Puenteo</label><input type="text" id="bridge" placeholder="Ej. Puenteado S con T" oninput="draw()"></div>
-      </div>
-      <label style="margin-top:6px;">Voltajes (Vrs / Vst / Vrt)</label>
-      <div class="g3">
-        <input type="text" id="vrs" value="218V" oninput="draw()">
-        <input type="text" id="vst" value="216V" oninput="draw()">
-        <input type="text" id="vrt" value="219V" oninput="draw()">
-      </div>
-      <label style="margin-top:6px;">Corrientes (Ir / Is / It)</label>
-      <div class="g3">
-        <input type="text" id="ir" value="19.25A" oninput="draw()">
-        <input type="text" id="is" value="18.79A" oninput="draw()">
-        <input type="text" id="it" value="0.0A" oninput="draw()">
-      </div>
-    </div>
-
-    <h2>4. Tableros Operadores / Derivaciones</h2>
-    <div id="branchList"></div>
-    <button class="btn btn-blue" style="width:100%;" onclick="addBranch()">+ Agregar Derivación Manual</button>
-  </div>
-
-  <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-      <div style="display:flex; gap:12px; align-items:center;">
-        <label style="display:flex; align-items:center; gap:5px; margin:0;"><input type="checkbox" id="gridBg" checked onchange="draw()"> Hoja cuadriculada</label>
-        <label style="display:flex; align-items:center; gap:5px; margin:0;"><input type="checkbox" id="handStyle" checked onchange="draw()"> Pulso a mano (plumón)</label>
-      </div>
-      <button class="btn btn-gray" onclick="draw()">🔄 Actualizar Trazo</button>
-    </div>
-    <div class="canvas-area">
-      <canvas id="canvas" width="1280" height="700"></canvas>
     </div>
   </div>
-</div>
+</section>
+
+<section id="mod-pano" class="view-section">
+  <iframe id="framePano" class="app-frame" src="https://github.io" title="Fotos Panorámicas y 360°"></iframe>
+</section>
 <script>
+const GLOBAL_SITE_KEY = "torres_unidas_site_global_v1";
+
+function syncSiteName(rawVal, source) {
+  const cleanName = (rawVal || "").toUpperCase();
+  const globalInp = document.getElementById("globalSiteInput");
+  const tabInp = document.getElementById("siteName");
+
+  if (globalInp && source !== "global") globalInp.value = cleanName;
+  if (tabInp && source !== "tablero") tabInp.value = cleanName;
+
+  try { localStorage.setItem(GLOBAL_SITE_KEY, cleanName); } catch (_) {}
+
+  // Sincronizar con el interior de los iframes (ESQUEMAS y PANORAMICA)
+  ["frameEsquemas", "framePano"].forEach((frameId) => {
+    const iframe = document.getElementById(frameId);
+    if (!iframe) return;
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      const innerSitio = doc.getElementById("sitio") || doc.getElementById("siteName");
+      if (innerSitio && innerSitio.value !== cleanName) {
+        innerSitio.value = cleanName;
+        innerSitio.dispatchEvent(new Event("input", { bubbles: true }));
+        innerSitio.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    } catch (_) {
+      iframe.contentWindow?.postMessage({ type: "SYNC_SITE_NAME", site: cleanName }, "*");
+    }
+  });
+
+  draw();
+}
+
+// Al cargar cada iframe, enviarle el nombre actual del sitio automáticamente
+document.getElementById("frameEsquemas").addEventListener("load", () => {
+  syncSiteName(document.getElementById("globalSiteInput").value, "global");
+  // Detectar si el usuario escribe el nombre dentro de ESQUEMAS para reflejarlo arriba
+  try {
+    const doc = document.getElementById("frameEsquemas").contentDocument;
+    const innerSitio = doc.getElementById("sitio");
+    if (innerSitio) {
+      innerSitio.addEventListener("input", () => syncSiteName(innerSitio.value, "iframe"));
+    }
+  } catch (_) {}
+});
+
+document.getElementById("framePano").addEventListener("load", () => {
+  syncSiteName(document.getElementById("globalSiteInput").value, "global");
+});
+
+function openModule(id, btn) {
+  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  syncSiteName(document.getElementById("globalSiteInput").value, "global");
+}
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let photos = [];
@@ -168,94 +267,72 @@ document.getElementById('photoInput').addEventListener('change', (e) => {
   const files = Array.from(e.target.files);
   if (!files.length) return;
   photos = [];
-  const tabs = document.getElementById('photoTabs');
-  tabs.innerHTML = '';
+  const tabs = document.getElementById('photoTabs'); tabs.innerHTML = '';
   files.forEach((f, idx) => {
     const r = new FileReader();
     r.onload = (ev) => {
       photos.push(ev.target.result);
       const btn = document.createElement('button');
-      btn.className = 'chip';
-      btn.textContent = `Foto ${idx + 1}`;
-      btn.onclick = () => showPhoto(idx);
+      btn.className = 'chip'; btn.textContent = `Foto ${idx + 1}`;
+      btn.onclick = () => {
+        const img = document.getElementById('previewImg');
+        img.src = photos[idx]; img.classList.remove('zoomed');
+        document.getElementById('photoViewer').style.display = 'block';
+      };
       tabs.appendChild(btn);
-      if (idx === 0) showPhoto(0);
+      if (idx === 0) btn.click();
     };
     r.readAsDataURL(f);
   });
 });
 
-function showPhoto(idx) {
-  const viewer = document.getElementById('photoViewer');
-  const img = document.getElementById('previewImg');
-  img.src = photos[idx];
-  img.classList.remove('zoomed');
-  viewer.style.display = 'block';
-}
-
 function quickAddItm(calibre) {
   branches.push({ name: 'TABLERO OPERADOR', itm: calibre, eq: 'EQUIPOS', eqItm: '2x40A', ir: '10.0A', is: '10.2A', it: '0.0A' });
-  renderBranches();
-  draw();
+  renderBranches(); draw();
 }
 
 function applyPreset(type) {
   if (type === 'MED_OP') {
-    document.getElementById('sourceType').value = 'MEDIDOR';
-    document.getElementById('owner').value = 'ENTEL';
-    document.getElementById('isPassBox').checked = false;
-    document.getElementById('mainBoard').value = 'Tablero OPERADOR ENTEL (Indep.)';
-    document.getElementById('mainItm').value = '3x63A';
-    document.getElementById('phases').value = '3F';
+    document.getElementById('sourceType').value = 'MEDIDOR'; document.getElementById('owner').value = 'ENTEL';
+    document.getElementById('isPassBox').checked = false; document.getElementById('mainBoard').value = 'Tablero OPERADOR ENTEL (Indep.)';
+    document.getElementById('mainItm').value = '3x63A'; document.getElementById('phases').value = '3F';
     branches = [{ name: 'EQUIPOS ENTEL', itm: '2x40A', eq: 'RECTIFICADOR / AA', eqItm: '', ir: '14.5A', is: '14.9A', it: '0.0A' }];
   } else if (type === 'CAJA_PASE') {
-    document.getElementById('sourceType').value = 'MEDIDOR';
-    document.getElementById('owner').value = 'CLARO';
-    document.getElementById('isPassBox').checked = true;
-    document.getElementById('mainBoard').value = 'Tablero PRINCIPAL (CAJA DE PASE)';
+    document.getElementById('sourceType').value = 'MEDIDOR'; document.getElementById('owner').value = 'CLARO';
+    document.getElementById('isPassBox').checked = true; document.getElementById('mainBoard').value = 'Tablero PRINCIPAL (CAJA DE PASE)';
     document.getElementById('phases').value = '1F';
     branches = [{ name: 'Tablero OPERADOR CLARO', itm: '', eq: 'EQUIPOS CLARO', eqItm: '2x63A', ir: '15.8A', is: '16.2A', it: '0.0A' }];
   } else if (type === 'POSTE_TRAFO') {
-    document.getElementById('sourceType').value = 'POSTE_TRAFO';
-    document.getElementById('owner').value = 'TU';
-    document.getElementById('isPassBox').checked = false;
-    document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
-    document.getElementById('mainItm').value = '3x125A';
-    document.getElementById('phases').value = '3F';
+    document.getElementById('sourceType').value = 'POSTE_TRAFO'; document.getElementById('owner').value = 'TU';
+    document.getElementById('isPassBox').checked = false; document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
+    document.getElementById('mainItm').value = '3x125A'; document.getElementById('phases').value = '3F';
     branches = [
       { name: 'Tablero TELEFONICA', itm: '3x100A', eq: 'EQUIPOS TELEFONICA', eqItm: '2x63A', ir: '20.1A', is: '19.5A', it: '0.0A' },
       { name: 'Tablero CLARO', itm: '3x100A', eq: 'EQUIPOS CLARO', eqItm: '2x80A', ir: '11.8A', is: '12.1A', it: '0.0A' }
     ];
   } else if (type === '2OP') {
-    document.getElementById('sourceType').value = 'MEDIDOR';
-    document.getElementById('owner').value = 'TU';
-    document.getElementById('isPassBox').checked = false;
-    document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
-    document.getElementById('mainItm').value = '3x100A';
-    document.getElementById('phases').value = '3F';
+    document.getElementById('sourceType').value = 'MEDIDOR'; document.getElementById('owner').value = 'TU';
+    document.getElementById('isPassBox').checked = false; document.getElementById('mainBoard').value = 'Tablero PRINCIPAL TU';
+    document.getElementById('mainItm').value = '3x100A'; document.getElementById('phases').value = '3F';
     branches = [
       { name: 'Tablero CLARO', itm: '3x50A', eq: 'EQUIPOS CLARO', eqItm: '2x40A', ir: '12.1A', is: '15.0A', it: '11.8A' },
       { name: 'Tablero ENTEL', itm: '3x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A', ir: '24.1A', is: '23.1A', it: '20.2A' }
     ];
   }
-  renderBranches();
-  draw();
+  renderBranches(); draw();
 }
-
 function renderBranches() {
-  const list = document.getElementById('branchList');
-  list.innerHTML = '';
+  const list = document.getElementById('branchList'); list.innerHTML = '';
   branches.forEach((b, i) => {
-    const el = document.createElement('div');
-    el.className = 'branch';
+    const el = document.createElement('div'); el.className = 'branch';
     el.innerHTML = `
       <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.8rem; font-weight:700;">
         <span>Derivación #${i + 1}</span>
-        <button class="btn btn-red" onclick="branches.splice(${i},1); renderBranches(); draw();">Quitar</button>
+        <button class="btn-red" onclick="branches.splice(${i},1); renderBranches(); draw();">Quitar</button>
       </div>
       <div class="g2">
         <div><label>Tablero Destino</label><input type="text" value="${b.name}" oninput="branches[${i}].name=this.value; draw();"></div>
-        <div><label>ITM Salida (vacío = directo)</label><input type="text" value="${b.itm}" oninput="branches[${i}].itm=this.value; draw();"></div>
+        <div><label>ITM Salida</label><input type="text" value="${b.itm}" oninput="branches[${i}].itm=this.value; draw();"></div>
       </div>
       <div class="g2" style="margin-top:5px;">
         <div><label>Carga Final</label><input type="text" value="${b.eq}" oninput="branches[${i}].eq=this.value; draw();"></div>
@@ -272,62 +349,46 @@ function renderBranches() {
 
 function addBranch() {
   branches.push({ name: 'TABLERO ENTEL', itm: '2x63A', eq: 'EQUIPOS ENTEL', eqItm: '2x40A', ir: '11.5A', is: '12.0A', it: '0.0A' });
-  renderBranches();
-  draw();
+  renderBranches(); draw();
 }
 
 function jit(n = 1.1) { return document.getElementById('handStyle').checked ? (Math.random() - 0.5) * n : 0; }
-
 function line(x1, y1, x2, y2, color = '#18181b', w = 2.6) {
   ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round';
   ctx.beginPath(); ctx.moveTo(x1 + jit(), y1 + jit());
   ctx.lineTo((x1 + x2) / 2 + jit(), (y1 + y2) / 2 + jit());
   ctx.lineTo(x2 + jit(), y2 + jit()); ctx.stroke(); ctx.restore();
 }
-
 function rect(x, y, w, h, color = '#18181b') {
   const o = document.getElementById('handStyle').checked ? 3 : 0;
   line(x - o, y, x + w + o, y, color); line(x + w, y - o, x + w, y + h + o, color);
   line(x + w + o, y + h, x - o, y + h, color); line(x, y + h + o, x, y - o, color);
 }
-
 function circle(cx, cy, r, color = '#18181b') {
   ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2.6;
-  ctx.beginPath(); ctx.arc(cx + jit(0.5), cy + jit(0.5), r, 0, Math.PI * 2);
-  ctx.stroke(); ctx.restore();
+  ctx.beginPath(); ctx.arc(cx + jit(0.5), cy + jit(0.5), r, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
 }
-
 function txt(t, x, y, size = 18, color = '#18181b', align = 'center', bold = false) {
   if (!t) return;
   ctx.save(); ctx.font = `${bold ? '700' : '400'} ${size}px 'Kalam', cursive`;
-  ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
-  ctx.fillText(t, x, y); ctx.restore();
+  ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(t, x, y); ctx.restore();
 }
 function breaker(x, y, amp) {
   line(x - 22, y, x, y); line(x - 14, y - 15, x, y);
-  line(x, y, x, y - 16); line(x, y - 16, x + 12, y - 16); line(x + 12, y - 16, x + 12, y);
-  line(x + 12, y, x + 22, y);
+  line(x, y, x, y - 16); line(x, y - 16, x + 12, y - 16); line(x + 12, y - 16, x + 12, y); line(x + 12, y, x + 22, y);
   ctx.save(); ctx.strokeStyle = '#18181b'; ctx.lineWidth = 2.6;
   ctx.beginPath(); ctx.arc(x + 28, y - 10, 6, Math.PI, 0); ctx.stroke(); ctx.restore();
   line(x + 34, y - 10, x + 34, y); line(x + 34, y, x + 52, y);
   if (amp) txt(amp, x + 16, y + 23, 18, '#c81e1e', 'center', true);
 }
-
 function slashes(x, y, mode) {
   const c = mode === '3F+N' ? 4 : (mode === '3F' ? 3 : 2);
-  for (let i = 0; i < c; i++) {
-    const sx = x - ((c - 1) * 7) / 2 + i * 7;
-    line(sx - 5, y - 11, sx + 5, y + 11, '#1e3a8a', 2);
-  }
+  for (let i = 0; i < c; i++) { const sx = x - ((c - 1) * 7) / 2 + i * 7; line(sx - 5, y - 11, sx + 5, y + 11, '#1e3a8a', 2); }
 }
-
 function drawPosteTransformador(x, y) {
-  line(x, y - 85, x, y + 85, '#18181b', 3.4);
-  line(x - 28, y - 72, x + 28, y - 72, '#18181b', 3);
-  line(x - 20, y - 80, x - 20, y - 72);
-  line(x + 20, y - 80, x + 20, y - 72);
-  circle(x + 26, y - 12, 18, '#1e3a8a');
-  circle(x + 26, y + 12, 18, '#1e3a8a');
+  line(x, y - 85, x, y + 85, '#18181b', 3.4); line(x - 28, y - 72, x + 28, y - 72, '#18181b', 3);
+  line(x - 20, y - 80, x - 20, y - 72); line(x + 20, y - 80, x + 20, y - 72);
+  circle(x + 26, y - 12, 18, '#1e3a8a'); circle(x + 26, y + 12, 18, '#1e3a8a');
   line(x + 44, y, x + 85, y, '#18181b', 2.6);
   txt('POSTE', x + 22, y - 92, 16, '#18181b', 'center', true);
   txt('Sin medidor / Conexión directa', x + 75, y + 50, 14, '#c81e1e', 'center', true);
@@ -337,18 +398,14 @@ function drawPosteTransformador(x, y) {
 function draw() {
   canvas.height = Math.max(660, 260 + branches.length * 165);
   ctx.fillStyle = '#fdfdfb'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-
   if (document.getElementById('gridBg').checked) {
     ctx.strokeStyle = 'rgba(148,163,184,0.22)'; ctx.lineWidth = 1;
     for (let x = 0; x < canvas.width; x += 24) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
     for (let y = 0; y < canvas.height; y += 24) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
   }
-
-  const site = document.getElementById('siteName').value.toUpperCase();
+  const site = (document.getElementById('siteName').value || 'SITIO').toUpperCase();
   const owner = document.getElementById('owner').value;
   const sourceType = document.getElementById('sourceType').value;
-  const serial = document.getElementById('serial').value;
-  const kwh = document.getElementById('kwh').value;
   const mainBoard = document.getElementById('mainBoard').value;
   const phases = document.getElementById('phases').value;
   const isPassBox = document.getElementById('isPassBox').checked;
@@ -360,38 +417,29 @@ function draw() {
   line(canvas.width / 2 - 230, 50, canvas.width / 2 + 230, 50);
 
   if (sourceType === 'MEDIDOR') {
-    txt('Medidor', 110, 90, 19, '#18181b', 'center', true);
-    txt(owner, 110, 112, 19, '#1e3a8a', 'center', true);
-    rect(50, 130, 120, 45); txt(serial, 110, 153, 16, '#18181b', 'center', true);
+    txt('Medidor', 110, 90, 19, '#18181b', 'center', true); txt(owner, 110, 112, 19, '#1e3a8a', 'center', true);
+    rect(50, 130, 120, 45); txt(document.getElementById('serial').value, 110, 153, 16, '#18181b', 'center', true);
     rect(50, 182, 120, 125); breaker(90, y0, '');
-    rect(68, 258, 84, 32); txt(kwh, 110, 275, 15, '#18181b', 'center', true);
+    rect(68, 258, 84, 32); txt(document.getElementById('kwh').value, 110, 275, 15, '#18181b', 'center', true);
     line(142, y0, 300, y0); slashes(225, y0, phases);
   } else if (sourceType === 'POSTE_TRAFO') {
-    drawPosteTransformador(85, y0);
-    line(170, y0, 300, y0); slashes(240, y0, phases);
+    drawPosteTransformador(85, y0); line(170, y0, 300, y0); slashes(240, y0, phases);
   } else {
     line(40, y0, 300, y0); slashes(245, y0, phases);
-    txt('Medidor no ubicado,', 140, y0 - 32, 16, '#c81e1e', 'center', true);
-    txt('conexión directa', 140, y0 - 13, 16, '#c81e1e', 'center', true);
+    txt('Medidor no ubicado,', 140, y0 - 32, 16, '#c81e1e', 'center', true); txt('conexión directa', 140, y0 - 13, 16, '#c81e1e', 'center', true);
   }
 
   const boxH = Math.max(235, 135 + branches.length * 150);
-  txt(mainBoard, 470, 98, 20, '#18181b', 'center', true);
-  rect(300, 120, 340, boxH);
-
+  txt(mainBoard, 470, 98, 20, '#18181b', 'center', true); rect(300, 120, 340, boxH);
   const busX = 505;
   if (isPassBox) {
-    line(300, y0, busX, y0, '#18181b', 2.8);
-    circle(400, y0, 5, '#c81e1e');
-    txt('CAJA DE PASE', 400, y0 - 28, 17, '#c81e1e', 'center', true);
-    txt('(Paso directo / Empalme)', 400, y0 - 10, 14, '#475569', 'center');
+    line(300, y0, busX, y0, '#18181b', 2.8); circle(400, y0, 5, '#c81e1e');
+    txt('CAJA DE PASE', 400, y0 - 28, 17, '#c81e1e', 'center', true); txt('(Paso directo)', 400, y0 - 10, 14, '#475569', 'center');
   } else {
     txt('Interruptor General', 385, 165, 16, '#18181b', 'center', true);
-    breaker(365, y0, mainItm);
-    line(417, y0, busX, y0);
+    breaker(365, y0, mainItm); line(417, y0, busX, y0);
     if (bridge) txt(bridge, 385, y0 + 44, 14, '#1e3a8a', 'center', true);
   }
-
   const ey = bridge ? y0 + 68 : y0 + 52;
   txt(`Vrs=${document.getElementById('vrs').value}`, 318, ey, 15, '#18181b', 'left');
   txt(`Vst=${document.getElementById('vst').value}`, 318, ey + 20, 15, '#18181b', 'left');
@@ -404,39 +452,26 @@ function draw() {
     if (branches.length > 1) line(busX, y0, busX, y0 + (branches.length - 1) * 150, '#18181b', 3.2);
     branches.forEach((b, i) => {
       const by = y0 + i * 150;
-      if (b.itm) {
-        line(busX, by, 535, by);
-        breaker(555, by, b.itm);
-        line(607, by, 760, by);
-      } else {
-        line(busX, by, 760, by);
-      }
+      if (b.itm) { line(busX, by, 535, by); breaker(555, by, b.itm); line(607, by, 760, by); } else { line(busX, by, 760, by); }
       slashes(690, by, (b.itm || mainItm).startsWith('3') ? '3F' : '1F');
       txt(`Ir=${b.ir}  Is=${b.is}  It=${b.it}`, 705, by + 26, 14, '#1e3a8a', 'center');
-
-      txt(b.name, 880, by - 64, 17, '#18181b', 'center', true);
-      rect(760, by - 50, 460, 108);
-      if (b.eqItm) {
-        line(760, by, 815, by);
-        breaker(835, by, b.eqItm);
-        line(887, by, 1010, by);
-      } else {
-        line(760, by, 1010, by);
-      }
-      rect(1010, by - 24, 185, 48, '#1e3a8a');
-      txt(b.eq || b.name, 1102, by, 16, '#1e3a8a', 'center', true);
+      txt(b.name, 880, by - 64, 17, '#18181b', 'center', true); rect(760, by - 50, 460, 108);
+      if (b.eqItm) { line(760, by, 815, by); breaker(835, by, b.eqItm); line(887, by, 1010, by); } else { line(760, by, 1010, by); }
+      rect(1010, by - 24, 185, 48, '#1e3a8a'); txt(b.eq || b.name, 1102, by, 16, '#1e3a8a', 'center', true);
     });
   }
 }
 
 function downloadPNG() {
   const site = (document.getElementById('siteName').value || 'SITE').trim().replace(/\s+/g, '_');
-  const a = document.createElement('a');
-  a.download = `Diagrama_Unifilar_${site}.png`;
-  a.href = canvas.toDataURL('image/png');
-  a.click();
+  const a = document.createElement('a'); a.download = `Diagrama_Unifilar_${site}.png`; a.href = canvas.toDataURL('image/png'); a.click();
 }
 
+const savedGlobalSite = localStorage.getItem(GLOBAL_SITE_KEY);
+if (savedGlobalSite) {
+  document.getElementById("globalSiteInput").value = savedGlobalSite;
+  document.getElementById("siteName").value = savedGlobalSite;
+}
 renderBranches();
 document.fonts.ready.then(() => draw());
 </script>
